@@ -25,7 +25,7 @@ const getUserConfirmationEmail = (email) => {
 
     return {
         Subject: {
-            Data: `🎉 ${welcomeTitle} - AI Career Agent Coach`,
+            Data: `Waitlist Confirmation - AI Career Agent Coach`,
             Charset: 'UTF-8'
         },
         Body: {
@@ -38,11 +38,8 @@ const getUserConfirmationEmail = (email) => {
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { background: linear-gradient(135deg, #00e5ff 0%, #8b5cf6 100%); padding: 40px 20px; text-align: center; border-radius: 10px 10px 0 0; }
-        .header h1 { color: white; margin: 0; font-size: 28px; }
         .content { background: #ffffff; padding: 40px 30px; border: 1px solid #e0e0e0; border-top: none; }
-        .status-box { background: #f0fdff; border: 1px solid #00e5ff; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; }
         .badge { display: inline-block; background: #00e5ff; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; margin: 10px 0; font-weight: bold; }
-        .workflow-step { margin: 20px 0; padding-left: 15px; border-left: 3px solid #b86dff; }
         .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
     </style>
 </head>
@@ -50,46 +47,27 @@ const getUserConfirmationEmail = (email) => {
     <div class="container">
         <div class="header">
             <img src="https://aicareeragentcoach.agency/images/logo.png" alt="AI Career Agent Coach" style="height: 60px; margin-bottom: 10px;">
-            <h1>🚀 You're on the List!</h1>
         </div>
         <div class="content">
-            <div class="status-box">
-                <p style="margin: 0; font-weight: bold; color: #0088cc;">OFFICIAL STATUS: WAITLISTED</p>
-                <p style="margin: 5px 0 0 0; font-size: 14px;">Email: ${email}</p>
-            </div>
+            <p>Hello,</p>
+            
+            <p>This email confirms that we’ve received your request to join the <strong>AI Career Agent Coach</strong> waitlist.</p>
 
             ${studentBadge}
-            <div class="badge">Founding Member Status: ACTIVE</div>
+            
+            <p>We’ll notify you when access becomes available or when there are important updates.<br>
+            Your email will only be used for waitlist-related communication.</p>
 
-            <h2>How our AI Agent will help you:</h2>
+            <p>Thank you for your interest,<br>
+            <strong>AI Career Agent Coach Team</strong></p>
             
-            <div class="workflow-step">
-                <strong>1. Smart Ingestion</strong><br>
-                The agent syncs your LinkedIn, Indeed, and Resume to understand your unique value.
-            </div>
-            
-            <div class="workflow-step">
-                <strong>2. Precision Matching</strong><br>
-                Using AWS Bedrock + Claude 3.5, the agent matches you with roles you'd actually love—not just keywords.
-            </div>
-            
-            <div class="workflow-step">
-                <strong>3. Auto-Apply</strong><br>
-                The agent drafts personalized cover letters and manages applications 24/7.
-            </div>
-
-            <p style="margin-top: 30px;"><strong>Next Step:</strong> Stay tuned. We're rolling out access in batches, and since you're a Founding Member, you're at the front of the line.</p>
-            
-            <p>The old way of job hunting is over. Welcome to the future.</p>
-            
-            <p style="margin-top: 30px;">
-                <strong>The AI Career Agent Team</strong><br>
-                <em>Built at Northeastern University</em>
+            <p style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; font-size: 14px; color: #666;">
+                <em>Built at Northeastern University</em><br>
+                Accelerating careers through AI automation.
             </p>
         </div>
         <div class="footer">
             <p>© 2025 AI Career Agent Coach. All rights reserved.</p>
-            <p>You joined our waitlist at aicareeragentcoach.agency</p>
         </div>
     </div>
 </body>
@@ -99,18 +77,17 @@ const getUserConfirmationEmail = (email) => {
             },
             Text: {
                 Data: `
-OFFICIAL STATUS: YOU ARE ON THE WAITLIST!
+Hello,
 
-Your founding member status is ACTIVE.
+This email confirms that we’ve received your request to join the AI Career Agent Coach waitlist.
 
-How the AI Career Agent works:
-1. Smart Ingestion: Sync your LinkedIn and Resume.
-2. Precision Matching: Agent finds roles using AWS Bedrock.
-3. Auto-Apply: Personalized applications while you sleep.
+We’ll notify you when access becomes available or when there are important updates.
+Your email will only be used for waitlist-related communication.
 
-Stay tuned for launch updates!
+Thank you for your interest,
+AI Career Agent Coach Team
 
-The AI Career Agent Team
+---
 Built at Northeastern University
             `,
                 Charset: 'UTF-8'
