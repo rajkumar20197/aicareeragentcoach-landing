@@ -113,6 +113,11 @@ export const WaitlistForm: React.FC = () => {
                     <span className="text-gray-300">Limited to first 500 members</span>
                 </div>
 
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-electric/10 border border-cyan-electric/20 rounded-full text-xs">
+                    <span className="text-cyan-electric">🎓</span>
+                    <span className="text-gray-400">Priority access for <span className="text-cyan-electric">.edu</span> emails</span>
+                </div>
+
                 <div className="text-sm text-gray-500">
                     <span className="text-cyan-electric font-mono">267</span> waiting
                 </div>
