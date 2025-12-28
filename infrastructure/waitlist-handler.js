@@ -18,96 +18,105 @@ const FROM_EMAIL = process.env.FROM_EMAIL || ''; // Must be verified in SES
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Email templates
-const getUserConfirmationEmail = (email) => ({
-    Subject: {
-        Data: '🎉 Welcome to AI Career Agent Coach - You\'re on the List!',
-        Charset: 'UTF-8'
-    },
-    Body: {
-        Html: {
-            Data: `
+const getUserConfirmationEmail = (email) => {
+    const isEdu = email.toLowerCase().endsWith('.edu');
+    const studentBadge = isEdu ? '<div class="badge" style="background: #8b5cf6;">🎓 Student Early Access Verified</div>' : '';
+    const welcomeTitle = isEdu ? 'Student Early Access Activated!' : 'Waitlist Access Confirmed!';
+
+    return {
+        Subject: {
+            Data: `🎉 ${welcomeTitle} - AI Career Agent Coach`,
+            Charset: 'UTF-8'
+        },
+        Body: {
+            Html: {
+                Data: `
 <!DOCTYPE html>
 <html>
 <head>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #00e5ff 0%, #b86dff 100%); padding: 40px 20px; text-align: center; border-radius: 10px 10px 0 0; }
+        .header { background: linear-gradient(135deg, #00e5ff 0%, #8b5cf6 100%); padding: 40px 20px; text-align: center; border-radius: 10px 10px 0 0; }
         .header h1 { color: white; margin: 0; font-size: 28px; }
         .content { background: #ffffff; padding: 40px 30px; border: 1px solid #e0e0e0; border-top: none; }
-        .badge { display: inline-block; background: #00e5ff; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; margin: 20px 0; }
+        .status-box { background: #f0fdff; border: 1px solid #00e5ff; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; }
+        .badge { display: inline-block; background: #00e5ff; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; margin: 10px 0; font-weight: bold; }
+        .workflow-step { margin: 20px 0; padding-left: 15px; border-left: 3px solid #b86dff; }
         .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
-        .cta-button { display: inline-block; background: linear-gradient(135deg, #00e5ff 0%, #b86dff 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; margin: 20px 0; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 You're In!</h1>
+            <h1>🚀 You're on the List!</h1>
         </div>
         <div class="content">
-            <h2>Welcome to the AI Career Agent Coach Waitlist</h2>
-            <p>Hey there! 👋</p>
-            <p>Thanks for joining our launch list. You're now part of an exclusive group of ambitious professionals who are getting early access to the future of job hunting.</p>
+            <div class="status-box">
+                <p style="margin: 0; font-weight: bold; color: #0088cc;">OFFICIAL STATUS: WAITLISTED</p>
+                <p style="margin: 5px 0 0 0; font-size: 14px;">Email: ${email}</p>
+            </div>
+
+            ${studentBadge}
+            <div class="badge">Founding Member Status: ACTIVE</div>
+
+            <h2>How our AI Agent will help you:</h2>
             
-            <div class="badge">✓ Founding Member Status: Activated</div>
+            <div class="workflow-step">
+                <strong>1. Smart Ingestion</strong><br>
+                The agent syncs your LinkedIn, Indeed, and Resume to understand your unique value.
+            </div>
             
-            <h3>What happens next?</h3>
-            <ul>
-                <li><strong>Early Access:</strong> You'll be first to try AI Career Agent Coach when we launch</li>
-                <li><strong>Exclusive Benefits:</strong> Founding members get special perks and discounts</li>
-                <li><strong>Launch Updates:</strong> We'll keep you posted on our progress</li>
-            </ul>
+            <div class="workflow-step">
+                <strong>2. Precision Matching</strong><br>
+                Using AWS Bedrock + Claude 3.5, the agent matches you with roles you'd actually love—not just keywords.
+            </div>
             
-            <p><strong>Your registered email:</strong> ${email}</p>
+            <div class="workflow-step">
+                <strong>3. Auto-Apply</strong><br>
+                The agent drafts personalized cover letters and manages applications 24/7.
+            </div>
+
+            <p style="margin-top: 30px;"><strong>Next Step:</strong> Stay tuned. We're rolling out access in batches, and since you're a Founding Member, you're at the front of the line.</p>
             
-            <p style="margin-top: 30px;">We're working hard to build something amazing. The old way of job hunting dies here.</p>
-            
-            <p>Stay tuned! 🎯</p>
+            <p>The old way of job hunting is over. Welcome to the future.</p>
             
             <p style="margin-top: 30px;">
                 <strong>The AI Career Agent Team</strong><br>
-                <em>Built by students, for the ambitious</em>
+                <em>Built at Northeastern University</em>
             </p>
         </div>
         <div class="footer">
             <p>© 2025 AI Career Agent Coach. All rights reserved.</p>
-            <p>You're receiving this because you joined our waitlist at aicareeragentcoach.agency</p>
+            <p>You joined our waitlist at aicareeragentcoach.agency</p>
         </div>
     </div>
 </body>
 </html>
             `,
-            Charset: 'UTF-8'
-        },
-        Text: {
-            Data: `
-Welcome to AI Career Agent Coach!
+                Charset: 'UTF-8'
+            },
+            Text: {
+                Data: `
+OFFICIAL STATUS: YOU ARE ON THE WAITLIST!
 
-You're now on our exclusive launch list.
+Your founding member status is ACTIVE.
 
-What happens next:
-- Early Access: You'll be first to try AI Career Agent Coach when we launch
-- Exclusive Benefits: Founding members get special perks and discounts  
-- Launch Updates: We'll keep you posted on our progress
+How the AI Career Agent works:
+1. Smart Ingestion: Sync your LinkedIn and Resume.
+2. Precision Matching: Agent finds roles using AWS Bedrock.
+3. Auto-Apply: Personalized applications while you sleep.
 
-Your registered email: ${email}
-
-We're working hard to build something amazing. The old way of job hunting dies here.
-
-Stay tuned!
+Stay tuned for launch updates!
 
 The AI Career Agent Team
-Built by students, for the ambitious
-
----
-© 2025 AI Career Agent Coach
-You're receiving this because you joined our waitlist at aicareeragentcoach.agency
+Built at Northeastern University
             `,
-            Charset: 'UTF-8'
+                Charset: 'UTF-8'
+            }
         }
-    }
-});
+    };
+};
 
 const getAdminNotificationEmail = (email, timestamp, ipAddress) => ({
     Subject: {

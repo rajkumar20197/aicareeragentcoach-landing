@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { CountdownTimer } from './components/CountdownTimer';
 import { WaitlistForm } from './components/WaitlistForm';
 import { FeatureTeasers } from './components/FeatureTeasers';
+import { Workflow } from './components/Workflow';
 import './index.css';
 
 function App() {
@@ -108,6 +109,11 @@ function App() {
                     {/* Feature Teasers */}
                     <div className="mb-20 md:mb-32">
                         <FeatureTeasers />
+                    </div>
+
+                    {/* Workflow Section */}
+                    <div className="mb-20 md:mb-32">
+                        <Workflow />
                     </div>
 
                     {/* Waitlist Form */}
