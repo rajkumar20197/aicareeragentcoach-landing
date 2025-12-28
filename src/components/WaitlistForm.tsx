@@ -16,13 +16,29 @@ export const WaitlistForm: React.FC = () => {
 
         setLoading(true);
 
-        // TODO: Integrate with AWS Lambda/DynamoDB to store emails
-        // For now, simulate API call
-        setTimeout(() => {
-            setSubmitted(true);
+        try {
+            const response = await fetch('https://zp2p756qze.execute-api.us-east-1.amazonaws.com/prod/waitlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email.toLowerCase().trim() }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setSubmitted(true);
+                console.log('Email submitted successfully:', email);
+            } else {
+                alert(data.error || 'Failed to join waitlist. Please try again.');
+                setLoading(false);
+            }
+        } catch (error) {
+            console.error('Error submitting email:', error);
+            alert('Network error. Please check your connection and try again.');
             setLoading(false);
-            console.log('Email submitted:', email);
-        }, 1000);
+        }
     };
 
     if (submitted) {

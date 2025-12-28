@@ -1,0 +1,198 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Waitlist Infrastructure for AI Career Agent Coach Landing Page"
+
+Resources:
+  # DynamoDB Table for storing waitlist emails
+  WaitlistTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: aicareer-landing-waitlist
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+      Tags:
+        - Key: Project
+          Value: AI-Career-Agent-Landing
+        - Key: Environment
+          Value: Production
+
+  # IAM Role for Lambda Function
+  WaitlistLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: aicareer-waitlist-lambda-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource: !GetAtt WaitlistTable.Arn
+
+  # Lambda Function
+  WaitlistFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: aicareer-waitlist-handler
+      Runtime: nodejs20.x
+      Handler: waitlist-handler.handler
+      Role: !GetAtt WaitlistLambdaRole.Arn
+      Timeout: 10
+      MemorySize: 256
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref WaitlistTable
+          CORS_ORIGIN: "*"
+          ADMIN_SECRET: "aicareer2025" # You can change this later
+      Code:
+        ZipFile: |
+          exports.handler = async (event) => {
+            return {
+              statusCode: 200,
+              body: JSON.stringify({ message: 'Placeholder - will be updated with deployment' })
+            };
+          };
+      Tags:
+        - Key: Project
+          Value: AI-Career-Agent-Landing
+
+  # API Gateway REST API
+  WaitlistApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: aicareer-landing-waitlist-api
+      Description: API for landing page waitlist
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  # API Gateway Resource (/waitlist)
+  WaitlistResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref WaitlistApi
+      ParentId: !GetAtt WaitlistApi.RootResourceId
+      PathPart: waitlist
+
+  # API Gateway Method (POST)
+  WaitlistPostMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref WaitlistApi
+      ResourceId: !Ref WaitlistResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WaitlistFunction.Arn}/invocations
+
+  # API Gateway Method (GET for signups)
+  WaitlistGetMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref WaitlistApi
+      ResourceId: !Ref WaitlistResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WaitlistFunction.Arn}/invocations
+
+  # API Gateway Method (OPTIONS for CORS)
+  WaitlistOptionsMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref WaitlistApi
+      ResourceId: !Ref WaitlistResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            ResponseTemplates:
+              application/json: ""
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+
+  # Lambda Permission for API Gateway
+  WaitlistLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WaitlistFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WaitlistApi}/*/*
+
+  # API Gateway Deployment
+  WaitlistApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - WaitlistPostMethod
+      - WaitlistOptionsMethod
+    Properties:
+      RestApiId: !Ref WaitlistApi
+
+  # API Gateway Stage
+  WaitlistApiStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId: !Ref WaitlistApi
+      DeploymentId: !Ref WaitlistApiDeployment
+      StageName: prod
+      Description: Production stage
+
+Outputs:
+  TableName:
+    Description: DynamoDB table name
+    Value: !Ref WaitlistTable
+    Export:
+      Name: WaitlistTableName
+
+  FunctionName:
+    Description: Lambda function name
+    Value: !Ref WaitlistFunction
+    Export:
+      Name: WaitlistFunctionName
+
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub https://${WaitlistApi}.execute-api.${AWS::Region}.amazonaws.com/prod/waitlist
+    Export:
+      Name: WaitlistApiEndpoint
+
+  ApiId:
+    Description: API Gateway ID
+    Value: !Ref WaitlistApi
+    Export:
+      Name: WaitlistApiId

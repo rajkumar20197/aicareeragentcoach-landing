@@ -1,0 +1,11 @@
+{
+    "name": "waitlist-handler",
+    "version": "1.0.0",
+    "description": "Lambda function for AI Career Agent Coach waitlist with email notifications",
+    "main": "waitlist-handler.js",
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.699.0",
+        "@aws-sdk/lib-dynamodb": "^3.699.0",
+        "@aws-sdk/client-ses": "^3.699.0"
+    }
+}

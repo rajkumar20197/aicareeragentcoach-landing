@@ -1,0 +1,1 @@
+﻿https://zp2p756qze.execute-api.us-east-1.amazonaws.com/prod/waitlist

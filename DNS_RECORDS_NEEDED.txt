@@ -1,0 +1,24 @@
+﻿DNS Records for aicareeragentcoach.agency
+========================================
+
+Add these CNAME records at your domain registrar:
+
+Record 1:
+  Type: CNAME
+  Name: @ (or aicareeragentcoach.agency)
+  Value: 
+  TTL: 300
+
+Record 2:
+  Type: CNAME  
+  Name: www
+  Value: 
+  TTL: 300
+
+Note: Some registrars don't allow CNAME on root (@).
+If that's the case, use ALIAS or ANAME if available,
+or only set up the www subdomain.
+
+After DNS propagation (10-30 min), test:
+  https://aicareeragentcoach.agency
+  https://www.aicareeragentcoach.agency

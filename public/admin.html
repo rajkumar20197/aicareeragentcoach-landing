@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waitlist Admin | AI Career Agent Coach</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e5ff;
+            --secondary: #b86dff;
+            --dark: #0a0a0c;
+            --surface: #121216;
+            --text: #ffffff;
+            --text-dim: #9ca3af;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        input {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-dim);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-dim);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .badge {
+            background: rgba(0, 229, 255, 0.1);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .login-card {
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div id="login-overlay">
+        <div class="login-card">
+            <h1>Admin Login</h1>
+            <p style="color: var(--text-dim); margin-bottom: 30px;">Enter secret key to view waitlist</p>
+            <input type="password" id="secret-input" placeholder="Enter secret key..." style="width: 100%; box-sizing: border-box; margin-bottom: 20px;">
+            <button onclick="login()" style="width: 100%;">Login</button>
+            <p id="login-error" style="color: #ef4444; font-size: 14px; margin-top: 15px; display: none;">Invalid secret key</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Waitlist Management</h1>
+            <button class="secondary" onclick="logout()">Logout</button>
+        </header>
+
+        <div id="error-box" class="error"></div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Signups</div>
+                <div id="total-count" class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Users</div>
+                <div class="stat-value">100%</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="fetchSignups()">Refresh Data</button>
+            <button class="secondary" onclick="exportToCSV()">Export CSV</button>
+        </div>
+
+        <div id="table-container">
+            <div class="loading">Connect to fetch data...</div>
+        </div>
+    </div>
+
+    <script>
+        let secret = localStorage.getItem('admin_secret');
+        const API_ENDPOINT = 'https://zp2p756qze.execute-api.us-east-1.amazonaws.com/prod/waitlist';
+
+        if (secret) {
+            document.getElementById('login-overlay').style.display = 'none';
+            fetchSignups();
+        }
+
+        async function login() {
+            const input = document.getElementById('secret-input').value;
+            if (!input) return;
+            
+            secret = input;
+            const success = await fetchSignups();
+            
+            if (success) {
+                localStorage.setItem('admin_secret', secret);
+                document.getElementById('login-overlay').style.display = 'none';
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('admin_secret');
+            location.reload();
+        }
+
+        async function fetchSignups() {
+            const errorBox = document.getElementById('error-box');
+            errorBox.style.display = 'none';
+            
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    headers: {
+                        'x-admin-secret': secret
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) throw new Error('Invalid secret key');
+                    throw new Error('Failed to fetch data');
+                }
+
+                const data = await response.json();
+                renderTable(data.signups);
+                document.getElementById('total-count').textContent = data.count;
+                return true;
+            } catch (err) {
+                console.error(err);
+                errorBox.textContent = err.message;
+                errorBox.style.display = 'block';
+                return false;
+            }
+        }
+
+        function renderTable(signups) {
+            const container = document.getElementById('table-container');
+            if (!signups || signups.length === 0) {
+                container.innerHTML = '<div class="loading">No signups yet</div>';
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Date Joined</th>
+                            <th>Source</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            signups.forEach(s => {
+                const date = new Date(s.timestamp).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                html += `
+                    <tr>
+                        <td><strong>${s.email}</strong></td>
+                        <td>${date}</td>
+                        <td><span class="badge">${s.source || 'landing'}</span></td>
+                        <td style="color: var(--text-dim); font-family: monospace;">${s.ipAddress || 'unknown'}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+
+        function exportToCSV() {
+            const table = document.querySelector('table');
+            if (!table) return;
+
+            let csv = [];
+            const rows = table.querySelectorAll('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = [], cols = rows[i].querySelectorAll('td, th');
+                
+                for (let j = 0; j < cols.length; j++) 
+                    row.push('"' + cols[j].innerText + '"');
+                
+                csv.push(row.join(','));        
+            }
+
+            const csvFile = new Blob([csv.join('\n')], {type: 'text/csv'});
+            const downloadLink = document.createElement('a');
+            downloadLink.download = 'aicareer-waitlist-' + new Date().toISOString().split('T')[0] + '.csv';
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = 'none';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+        }
+    </script>
+</body>
+</html>

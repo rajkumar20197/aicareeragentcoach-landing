@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { CountdownTimer } from './components/CountdownTimer';
 import { WaitlistForm } from './components/WaitlistForm';
