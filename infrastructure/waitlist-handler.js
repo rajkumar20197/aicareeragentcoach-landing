@@ -49,6 +49,7 @@ const getUserConfirmationEmail = (email) => {
 <body>
     <div class="container">
         <div class="header">
+            <img src="https://aicareeragentcoach.agency/images/logo.png" alt="AI Career Agent Coach" style="height: 60px; margin-bottom: 10px;">
             <h1>🚀 You're on the List!</h1>
         </div>
         <div class="content">

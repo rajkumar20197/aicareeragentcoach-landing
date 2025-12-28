@@ -1,0 +1,45 @@
+﻿{
+  "CallerReference": "aicareer-manual-1766878504.67049",
+  "Aliases": {
+    "Quantity": 2,
+    "Items": ["aicareeragentcoach.agency", "www.aicareeragentcoach.agency"]
+  },
+  "DefaultRootObject": "index.html",
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "S3-aicareeragentcoach.agency",
+        "DomainName": "aicareeragentcoach.agency.s3-website-us-east-1.amazonaws.com",
+        "CustomOriginConfig": {
+          "HTTPPort": 80,
+          "HTTPSPort": 443,
+          "OriginProtocolPolicy": "http-only",
+          "OriginSslProtocols": {
+            "Quantity": 1,
+            "Items": ["TLSv1.2"]
+          }
+        }
+      }
+    ]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "S3-aicareeragentcoach.agency",
+    "ForwardedValues": {
+      "QueryString": false,
+      "Cookies": { "Forward": "none" }
+    },
+    "TrustedSigners": { "Enabled": false, "Quantity": 0 },
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "MinTTL": 0
+  },
+  "CacheBehaviors": { "Quantity": 0 },
+  "Comment": "AI Career Agent Coach - Coming Soon Page",
+  "Enabled": true,
+  "ViewerCertificate": {
+    "ACMCertificateArn": "arn:aws:acm:us-east-1:980826468182:certificate/e439e8fb-aa38-41a0-a840-cb987e0f35ae",
+    "SSLSupportMethod": "sni-only",
+    "MinimumProtocolVersion": "TLSv1.2_2021",
+    "CertificateSource": "acm"
+  }
+}

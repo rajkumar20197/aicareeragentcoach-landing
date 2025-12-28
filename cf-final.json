@@ -1,0 +1,85 @@
+{
+    "Comment":  "AI Career Agent Coach - Fixed",
+    "ViewerCertificate":  {
+                              "MinimumProtocolVersion":  "TLSv1.2_2021",
+                              "ACMCertificateArn":  "arn:aws:acm:us-east-1:980826468182:certificate/e439e8fb-aa38-41a0-a840-cb987e0f35ae",
+                              "SSLSupportMethod":  "sni-only"
+                          },
+    "Enabled":  true,
+    "Aliases":  {
+                    "Quantity":  2,
+                    "Items":  [
+                                  "aicareeragentcoach.agency",
+                                  "www.aicareeragentcoach.agency"
+                              ]
+                },
+    "PriceClass":  "PriceClass_100",
+    "CallerReference":  "aicareer-final-20251227233646",
+    "DefaultRootObject":  "index.html",
+    "DefaultCacheBehavior":  {
+                                 "DefaultTTL":  86400,
+                                 "MaxTTL":  31536000,
+                                 "Compress":  true,
+                                 "TargetOriginId":  "S3-aicareeragentcoach.agency",
+                                 "ForwardedValues":  {
+                                                         "Cookies":  {
+                                                                         "Forward":  "none"
+                                                                     },
+                                                         "QueryString":  false,
+                                                         "Headers":  {
+                                                                         "Quantity":  0
+                                                                     }
+                                                     },
+                                 "MinTTL":  0,
+                                 "TrustedSigners":  {
+                                                        "Quantity":  0,
+                                                        "Enabled":  false
+                                                    },
+                                 "AllowedMethods":  {
+                                                        "Quantity":  2,
+                                                        "Items":  [
+                                                                      "GET",
+                                                                      "HEAD"
+                                                                  ],
+                                                        "CachedMethods":  {
+                                                                              "Quantity":  2,
+                                                                              "Items":  [
+                                                                                            "GET",
+                                                                                            "HEAD"
+                                                                                        ]
+                                                                          }
+                                                    },
+                                 "ViewerProtocolPolicy":  "redirect-to-https"
+                             },
+    "CustomErrorResponses":  {
+                                 "Quantity":  1,
+                                 "Items":  [
+                                               {
+                                                   "ResponsePagePath":  "/index.html",
+                                                   "ErrorCode":  404,
+                                                   "ErrorCachingMinTTL":  300,
+                                                   "ResponseCode":  "200"
+                                               }
+                                           ]
+                             },
+    "Origins":  {
+                    "Quantity":  1,
+                    "Items":  [
+                                  {
+                                      "CustomOriginConfig":  {
+                                                                 "HTTPSPort":  443,
+                                                                 "OriginSslProtocols":  {
+                                                                                            "Quantity":  1,
+                                                                                            "Items":  [
+                                                                                                          "TLSv1.2"
+                                                                                                      ]
+                                                                                        },
+                                                                 "HTTPPort":  80,
+                                                                 "OriginProtocolPolicy":  "http-only"
+                                                             },
+                                      "Id":  "S3-aicareeragentcoach.agency",
+                                      "DomainName":  "aicareeragentcoach.agency.s3-website-us-east-1.amazonaws.com"
+                                  }
+                              ]
+                }
+}
