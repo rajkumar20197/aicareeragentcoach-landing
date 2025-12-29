@@ -4,14 +4,14 @@ Landing page for **aicareeragentcoach.agency**
 
 ## 🎯 Live Site
 
-### Current Access (HTTP)
-- **S3 Endpoint:** http://aicareeragentcoach.agency.s3-website-us-east-1.amazonaws.com
+### ✅ Production URL (LIVE NOW!)
+**🔗 https://aicareeragentcoach.agency/**
 
-### Production URLs (After DNS Setup)
-- **Primary:** https://aicareeragentcoach.agency
+### Alternative Access
+- **S3 Endpoint:** http://aicareeragentcoach.agency.s3-website-us-east-1.amazonaws.com
 - **WWW:** https://www.aicareeragentcoach.agency
 
-> 📝 See `LIVE_DEPLOYMENT_INFO.md` for complete deployment details and next steps
+> 📝 See `LIVE_DEPLOYMENT_INFO.md` for complete deployment details
 
 ## 🚀 Quick Deploy to AWS
 
@@ -107,6 +107,15 @@ The waitlist form can be connected to AWS Lambda. See:
 - [ ] SSL certificate issued
 - [ ] DNS configured
 - [ ] Site live
+
+---
+
+## 📄 License & Copyright
+
+**Copyright © 2025 Raj Kumar & Team**  
+All rights reserved.
+
+This is a personal project for **AI Career Agent Coach**. The code and design are proprietary and intended for this specific application.
 
 ---
 
