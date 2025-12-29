@@ -2,30 +2,56 @@
 // Handles email submissions and sends confirmation emails via SES
 
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, PutCommand, GetCommand } = require('@aws-sdk/lib-dynamodb');
-const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
+const { DynamoDBDocumentClient, PutCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb');
+const { SESClient, SendEmailCommand, VerifyEmailIdentityCommand } = require('@aws-sdk/client-ses');
 
-const dynamoClient = new DynamoDBClient({});
+const dynamoClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'us-east-1' });
 const docClient = DynamoDBDocumentClient.from(dynamoClient);
-const sesClient = new SESClient({});
+const sesClient = new SESClient({ region: process.env.AWS_REGION || 'us-east-1' });
 
 const TABLE_NAME = process.env.TABLE_NAME || 'aicareer-landing-waitlist';
+const PARTNERSHIP_TABLE_NAME = process.env.PARTNERSHIP_TABLE_NAME || 'aicareer-landing-partnerships';
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || ''; // Set this in environment variables
-const FROM_EMAIL = process.env.FROM_EMAIL || ''; // Must be verified in SES
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'rajkumarthota20197@gmail.com';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'rajkumarthota20197@gmail.com';
+const ADMIN_SECRET = process.env.ADMIN_SECRET || 'aicareer2025';
 
 // Email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Email templates
-const getUserConfirmationEmail = (email) => {
-    const isEdu = email.toLowerCase().endsWith('.edu');
-    const studentBadge = isEdu ? '<div class="badge" style="background: #8b5cf6;">🎓 Student Early Access Verified</div>' : '';
-    const welcomeTitle = isEdu ? 'Student Early Access Activated!' : 'Waitlist Access Confirmed!';
+const getOTPVerificationEmail = (otp) => ({
+    Subject: {
+        Data: `Your Verification Code: ${otp}`,
+        Charset: 'UTF-8'
+    },
+    Body: {
+        Html: {
+            Data: `
+<!DOCTYPE html>
+<html>
+<body style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; background: #f9fafb;">
+    <div style="max-width: 500px; margin: 40px auto; padding: 40px; border-radius: 24px; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <h1 style="color: #00e5ff; text-align: center; font-size: 24px;">AI Career Agent Coach</h1>
+        <p style="font-size: 16px; color: #4b5563; text-align: center;">Your one-time verification code is:</p>
+        <div style="background: #f3f4f6; border-radius: 12px; padding: 20px; text-align: center; margin: 24px 0;">
+            <span style="font-family: monospace; font-size: 36px; font-weight: 800; letter-spacing: 8px; color: #111827;">${otp}</span>
+        </div>
+        <p style="font-size: 14px; color: #6b7280; text-align: center;">This code will expire in 10 minutes.</p>
+        <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 24px 0;">
+        <p style="font-size: 12px; color: #9ca3af; text-align: center;">If you didn't request this, please ignore this email.</p>
+    </div>
+</body>
+</html>`,
+            Charset: 'UTF-8'
+        }
+    }
+});
 
+const getUserConfirmationEmail = (email) => {
     return {
         Subject: {
-            Data: `Waitlist Confirmation - AI Career Agent Coach`,
+            Data: `Welcome to AI Career Agent Coach - Waitlist Confirmed`,
             Charset: 'UTF-8'
         },
         Body: {
@@ -33,72 +59,62 @@ const getUserConfirmationEmail = (email) => {
                 Data: `
 <!DOCTYPE html>
 <html>
-<head>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #00e5ff 0%, #8b5cf6 100%); padding: 40px 20px; text-align: center; border-radius: 10px 10px 0 0; }
-        .content { background: #ffffff; padding: 40px 30px; border: 1px solid #e0e0e0; border-top: none; }
-        .badge { display: inline-block; background: #00e5ff; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; margin: 10px 0; font-weight: bold; }
-        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <img src="https://aicareeragentcoach.agency/images/logo.png" alt="AI Career Agent Coach" style="height: 60px; margin-bottom: 10px;">
+<body style="font-family: 'Inter', Arial, sans-serif; line-height: 1.6; color: #333; background: #f9fafb;">
+    <div style="max-width: 600px; margin: 40px auto; padding: 40px; border-radius: 24px; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <h1 style="color: #00e5ff; text-align: center; margin-bottom: 30px;">AI Career Agent Coach</h1>
+        <p style="font-size: 18px; color: #111827; font-weight: 600;">You're on the list!</p>
+        <p style="font-size: 16px; color: #4b5563;">Thank you for joining the waitlist. You've successfully reserved your spot for early access to the future of career automation.</p>
+        <div style="background: #f3f4f6; border-radius: 12px; padding: 20px; margin: 24px 0;">
+            <p style="margin: 0; font-size: 14px; color: #6b7280;">Next Steps:</p>
+            <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #4b5563;">
+                <li>Real-time development updates</li>
+                <li>Exclusive beta access invites</li>
+                <li>Early-bird pricing when we launch</li>
+            </ul>
         </div>
-        <div class="content">
-            <p>Hello,</p>
-            
-            <p>This email confirms that we’ve received your request to join the <strong>AI Career Agent Coach</strong> waitlist.</p>
-
-            ${studentBadge}
-            
-            <p>We’ll notify you when access becomes available or when there are important updates.<br>
-            Your email will only be used for waitlist-related communication.</p>
-
-            <p>Thank you for your interest,<br>
-            <strong>AI Career Agent Coach Team</strong></p>
-            
-            <p style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; font-size: 14px; color: #666;">
-                <em>Built at Northeastern University</em><br>
-                Accelerating careers through AI automation.
-            </p>
-        </div>
-        <div class="footer">
-            <p>© 2025 AI Career Agent Coach. All rights reserved.</p>
-        </div>
+        <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 24px 0;">
+        <p style="font-size: 14px; color: #9ca3af; text-align: center;">Built for the ambitious. Empowering the next generation of global talent.</p>
     </div>
 </body>
-</html>
-            `,
-                Charset: 'UTF-8'
-            },
-            Text: {
-                Data: `
-Hello,
-
-This email confirms that we’ve received your request to join the AI Career Agent Coach waitlist.
-
-We’ll notify you when access becomes available or when there are important updates.
-Your email will only be used for waitlist-related communication.
-
-Thank you for your interest,
-AI Career Agent Coach Team
-
----
-Built at Northeastern University
-            `,
+</html>`,
                 Charset: 'UTF-8'
             }
         }
     };
 };
 
-const getAdminNotificationEmail = (email, timestamp, ipAddress) => ({
+const getPartnershipConfirmationEmail = (email) => ({
     Subject: {
-        Data: `🔔 New Waitlist Signup: ${email}`,
+        Data: `Partnership Inquiry Received - AI Career Agent Coach`,
+        Charset: 'UTF-8'
+    },
+    Body: {
+        Html: {
+            Data: `
+<!DOCTYPE html>
+<html>
+<body style="font-family: 'Inter', Arial, sans-serif; line-height: 1.6; color: #333; background: #f9fafb;">
+    <div style="max-width: 600px; margin: 40px auto; padding: 40px; border-radius: 24px; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <h1 style="color: #8b5cf6; text-align: center; margin-bottom: 30px;">AI Career Agent Coach</h1>
+        <p style="font-size: 18px; color: #111827; font-weight: 600;">Partnership Inquiry Received</p>
+        <p style="font-size: 16px; color: #4b5563;">Thank you for expressing interest in a strategic partnership with AI Career Agent Coach. We are thrilled to connect with visionaries who want to redefine the career cycle.</p>
+        <div style="background: #f5f3ff; border-radius: 12px; padding: 20px; margin: 24px 0; border-left: 4px solid #8b5cf6;">
+            <p style="margin: 0; font-size: 14px; color: #6b7280;">What's Next:</p>
+            <p style="margin: 10px 0 0 0; color: #4b5563;">Our founding team will review your inquiry and reach out via this email to schedule a discovery call within the next 48 hours.</p>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 24px 0;">
+        <p style="font-size: 14px; color: #9ca3af; text-align: center;">Building the future of AI-driven career growth, together.</p>
+    </div>
+</body>
+</html>`,
+            Charset: 'UTF-8'
+        }
+    }
+});
+
+const getAdminNotificationEmail = (email, type, timestamp, ipAddress) => ({
+    Subject: {
+        Data: `🔔 New ${type === 'verified' ? 'LIVE' : 'QUEUE'} Signup: ${email}`,
         Charset: 'UTF-8'
     },
     Body: {
@@ -107,269 +123,156 @@ const getAdminNotificationEmail = (email, timestamp, ipAddress) => ({
 <!DOCTYPE html>
 <html>
 <body style="font-family: Arial, sans-serif; padding: 20px;">
-    <h2>New Waitlist Signup</h2>
-    <p>Someone just joined your waitlist!</p>
-    <table style="border-collapse: collapse; margin: 20px 0;">
-        <tr>
-            <td style="padding: 8px; background: #f5f5f5;"><strong>Email:</strong></td>
-            <td style="padding: 8px;">${email}</td>
-        </tr>
-        <tr>
-            <td style="padding: 8px; background: #f5f5f5;"><strong>Time:</strong></td>
-            <td style="padding: 8px;">${new Date(timestamp).toLocaleString()}</td>
-        </tr>
-        <tr>
-            <td style="padding: 8px; background: #f5f5f5;"><strong>IP Address:</strong></td>
-            <td style="padding: 8px;">${ipAddress}</td>
-        </tr>
-    </table>
-    <p><a href="https://console.aws.amazon.com/dynamodbv2/home?region=us-east-1#item-explorer?table=aicareer-landing-waitlist">View in DynamoDB</a></p>
+    <h2>New Signup Alert</h2>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Type:</strong> ${type}</p>
+    <p><strong>Time:</strong> ${new Date(timestamp).toLocaleString()}</p>
+    <p><strong>IP:</strong> ${ipAddress}</p>
 </body>
-</html>
-            `,
-            Charset: 'UTF-8'
-        },
-        Text: {
-            Data: `
-New Waitlist Signup
-
-Email: ${email}
-Time: ${new Date(timestamp).toLocaleString()}
-IP Address: ${ipAddress}
-
-View all signups in AWS Console:
-https://console.aws.amazon.com/dynamodbv2/home?region=us-east-1#item-explorer?table=aicareer-landing-waitlist
-            `,
+</html>`,
             Charset: 'UTF-8'
         }
     }
 });
 
-// Send email via SES
 async function sendEmail(toEmail, emailContent, fromEmail) {
-    if (!fromEmail) {
-        console.log('FROM_EMAIL not configured, skipping email send');
-        return;
-    }
-
-    const params = {
-        Source: fromEmail,
-        Destination: {
-            ToAddresses: [toEmail]
-        },
-        Message: emailContent
-    };
-
     try {
-        await sesClient.send(new SendEmailCommand(params));
-        console.log(`Email sent successfully to ${toEmail}`);
-    } catch (error) {
-        console.error(`Failed to send email to ${toEmail}:`, error);
-        // Don't fail the request if email fails
+        await sesClient.send(new SendEmailCommand({
+            Source: fromEmail,
+            Destination: { ToAddresses: [toEmail] },
+            Message: emailContent
+        }));
+    } catch (err) {
+        console.error(`Email send error: ${err.message}`);
+        throw err; // Rethrow to inform the caller
     }
 }
 
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'changeme';
+async function triggerVerification(email) {
+    try {
+        await sesClient.send(new VerifyEmailIdentityCommand({ EmailAddress: email }));
+        console.log(`Triggered SES verification for ${email}`);
+    } catch (err) {
+        console.error(`Verification trigger error: ${err.message}`);
+    }
+}
 
 exports.handler = async (event) => {
-    console.log('Event:', JSON.stringify(event, null, 2));
-
-    // CORS headers
     const headers = {
         'Access-Control-Allow-Origin': CORS_ORIGIN,
-        'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,x-admin-secret',
+        'Access-Control-Allow-Headers': 'Content-Type,x-admin-secret',
         'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
         'Content-Type': 'application/json'
     };
 
-    // Handle OPTIONS request for CORS preflight
-    if (event.httpMethod === 'OPTIONS') {
-        return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({ message: 'CORS preflight successful' })
-        };
-    }
-
-    // Handle GET /signups (Admin access)
-    if (event.httpMethod === 'GET') {
-        const providedSecret = event.headers?.['x-admin-secret'] || event.queryStringParameters?.secret;
-
-        if (!providedSecret || providedSecret !== ADMIN_SECRET) {
-            return {
-                statusCode: 401,
-                headers,
-                body: JSON.stringify({ success: false, error: 'Unauthorized' })
-            };
-        }
-
-        try {
-            const { ScanCommand } = require('@aws-sdk/lib-dynamodb');
-            const data = await docClient.send(new ScanCommand({
-                TableName: TABLE_NAME
-            }));
-
-            // Sort by timestamp descending
-            const signups = (data.Items || []).sort((a, b) =>
-                new Date(b.timestamp) - new Date(a.timestamp)
-            );
-
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({
-                    success: true,
-                    count: signups.length,
-                    signups
-                })
-            };
-        } catch (error) {
-            console.error('Error fetching signups:', error);
-            return {
-                statusCode: 500,
-                headers,
-                body: JSON.stringify({ success: false, error: 'Failed to fetch signups' })
-            };
-        }
-    }
+    if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: JSON.stringify({ message: 'OK' }) };
 
     try {
-        // Parse request body
-        let body;
-        try {
-            body = JSON.parse(event.body || '{}');
-        } catch (e) {
-            return {
-                statusCode: 400,
-                headers,
-                body: JSON.stringify({
-                    success: false,
-                    error: 'Invalid JSON in request body'
-                })
-            };
-        }
+        if (event.httpMethod === 'GET') {
+            const queryParams = event.queryStringParameters || {};
+            const type = queryParams.type || 'standard';
+            const isCount = event.path?.endsWith('/count') || event.resource?.endsWith('/count') || !event.headers['x-admin-secret'];
 
-        const { email } = body;
+            const targetTable = type === 'partnership' ? PARTNERSHIP_TABLE_NAME : TABLE_NAME;
 
-        // Validate email
-        if (!email) {
-            return {
-                statusCode: 400,
-                headers,
-                body: JSON.stringify({
-                    success: false,
-                    error: 'Email is required'
-                })
-            };
-        }
-
-        if (!EMAIL_REGEX.test(email)) {
-            return {
-                statusCode: 400,
-                headers,
-                body: JSON.stringify({
-                    success: false,
-                    error: 'Invalid email format'
-                })
-            };
-        }
-
-        // Normalize email (lowercase)
-        const normalizedEmail = email.toLowerCase().trim();
-
-        // Check if email already exists
-        try {
-            const getResult = await docClient.send(new GetCommand({
-                TableName: TABLE_NAME,
-                Key: { email: normalizedEmail }
-            }));
-
-            if (getResult.Item) {
+            if (isCount) {
+                const data = await docClient.send(new ScanCommand({ TableName: targetTable, Select: "COUNT" }));
                 return {
                     statusCode: 200,
                     headers,
-                    body: JSON.stringify({
-                        success: true,
-                        message: 'You are already on the waitlist!',
-                        alreadyExists: true
-                    })
+                    body: JSON.stringify({ success: true, count: data.Count || 0 })
+                };
+            } else {
+                // Admin access to list emails
+                const providedSecret = event.headers['x-admin-secret'];
+                if (providedSecret !== ADMIN_SECRET) {
+                    return { statusCode: 401, headers, body: JSON.stringify({ success: false, error: 'Unauthorized' }) };
+                }
+                const data = await docClient.send(new ScanCommand({ TableName: targetTable }));
+                return {
+                    statusCode: 200,
+                    headers,
+                    body: JSON.stringify({ success: true, items: data.Items || [] })
                 };
             }
-        } catch (error) {
-            console.error('Error checking existing email:', error);
         }
 
-        // Store email in DynamoDB
-        const timestamp = new Date().toISOString();
-        const ipAddress = event.requestContext?.identity?.sourceIp || 'unknown';
-        const userAgent = event.headers?.['User-Agent'] || 'unknown';
+        if (event.httpMethod === 'POST') {
+            const body = JSON.parse(event.body || '{}');
+            const email = body.email?.toLowerCase().trim();
+            const action = body.action || 'signup'; // 'signup', 'send_otp', 'verify_otp'
 
-        const item = {
-            email: normalizedEmail,
-            timestamp,
-            source: 'landing-page',
-            userAgent,
-            ipAddress
-        };
+            if (!email || !EMAIL_REGEX.test(email)) {
+                return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'Invalid email' }) };
+            }
 
-        await docClient.send(new PutCommand({
-            TableName: TABLE_NAME,
-            Item: item,
-            ConditionExpression: 'attribute_not_exists(email)'
-        }));
+            const timestamp = new Date().toISOString();
+            const ip = event.requestContext?.identity?.sourceIp || 'unknown';
 
-        console.log('Email stored successfully:', normalizedEmail);
+            try {
+                if (action === 'partnership') {
+                    await docClient.send(new PutCommand({
+                        TableName: PARTNERSHIP_TABLE_NAME,
+                        Item: {
+                            email,
+                            timestamp,
+                            ipAddress: ip,
+                            subscriptionType: 'partnership',
+                            source: 'web'
+                        }
+                    }));
 
-        // Send confirmation email to user
-        if (FROM_EMAIL) {
-            await sendEmail(
-                normalizedEmail,
-                getUserConfirmationEmail(normalizedEmail),
-                FROM_EMAIL
-            );
+                    // We wrap emails in a separate try-catch so registration succeeds even if SES is in Sandbox
+                    try {
+                        await Promise.all([
+                            sendEmail(ADMIN_EMAIL, getAdminNotificationEmail(email, 'partnership', timestamp, ip), FROM_EMAIL),
+                            sendEmail(email, getPartnershipConfirmationEmail(email), FROM_EMAIL)
+                        ]);
+                    } catch (emailErr) {
+                        console.warn('Email notification failed (likely SES Sandbox):', emailErr.message);
+                    }
+
+                    return { statusCode: 200, headers, body: JSON.stringify({ success: true, message: 'Inquiry received!' }) };
+                }
+
+                // --- Standard Signup ---
+                await docClient.send(new PutCommand({
+                    TableName: TABLE_NAME,
+                    Item: {
+                        email,
+                        timestamp,
+                        ipAddress: ip,
+                        subscriptionType: 'standard',
+                        source: 'web'
+                    }
+                }));
+
+                try {
+                    await Promise.all([
+                        sendEmail(ADMIN_EMAIL, getAdminNotificationEmail(email, 'standard', timestamp, ip), FROM_EMAIL),
+                        sendEmail(email, getUserConfirmationEmail(email), FROM_EMAIL)
+                    ]);
+                } catch (emailErr) {
+                    console.warn('Email notification failed (likely SES Sandbox):', emailErr.message);
+                }
+
+                return { statusCode: 200, headers, body: JSON.stringify({ success: true, message: 'Joined waitlist!' }) };
+            } catch (dbErr) {
+                console.error('Database Error:', dbErr);
+                throw dbErr;
+            }
         }
 
-        // Send notification to admin
-        if (ADMIN_EMAIL && FROM_EMAIL) {
-            await sendEmail(
-                ADMIN_EMAIL,
-                getAdminNotificationEmail(normalizedEmail, timestamp, ipAddress),
-                FROM_EMAIL
-            );
-        }
-
-        return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({
-                success: true,
-                message: 'Successfully joined the waitlist! Check your email for confirmation.',
-                email: normalizedEmail
-            })
-        };
-
+        return { statusCode: 404, headers, body: JSON.stringify({ error: 'Not Found' }) };
     } catch (error) {
         console.error('Error:', error);
-
-        // Handle duplicate email error
-        if (error.name === 'ConditionalCheckFailedException') {
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({
-                    success: true,
-                    message: 'You are already on the waitlist!',
-                    alreadyExists: true
-                })
-            };
-        }
-
         return {
             statusCode: 500,
             headers,
             body: JSON.stringify({
                 success: false,
-                error: 'Failed to process request. Please try again.'
+                error: error.message,
+                stack: error.stack
             })
         };
     }

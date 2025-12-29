@@ -25,67 +25,26 @@ Your AI Career Agent Coach landing page deployment - step by step guide.
 
 ## ⏳ IN PROGRESS
 
-### Phase 3: HTTPS & Custom Domain
-
-#### Step 1: SSL Certificate (IN PROGRESS)
-**Status**: ⏳ Waiting for DNS validation
-
-**What you need to do NOW**:
-1. Go to your domain registrar (where you bought `aicareeragentcoach.agency`)
-2. Add this **CNAME record**:
-
-```
-Type:  CNAME
-Name:  _229a146ff911be7a5201675ad49a69dd
-Value: _7626fe0ec24c32818231fa78eba3a3cb.jkddzztszm.acm-validations.aws.
-TTL:   300
-```
-
-**📖 See detailed instructions**: `SSL_SETUP_INSTRUCTIONS.md`
-
-**Where is your domain?**
-- GoDaddy
-- Namecheap
-- Cloudflare
-- Other: ___________
-
-#### Step 2: CloudFront Distribution (READY TO RUN)
-**Status**: ⏸️ Waiting for SSL certificate validation
-
-**Once certificate is validated, run**:
-```powershell
-.\deploy-cloudfront.ps1
-```
-
-This will:
-- Create CloudFront CDN distribution
-- Configure HTTPS
-- Generate DNS records for you to add
+### Phase 3: HTTPS & Custom Domain ✓
+- [x] SSL Certificate issued via ACM
+- [x] CloudFront distribution deployed (`E3J96WC7WKFJ45`)
+- [x] DNS records configured (CNAME pointing to CloudFront)
+- [x] Site live at https://aicareeragentcoach.agency
 
 ---
 
-## 📋 TODO (After SSL Validation)
+### Phase 4: Email Notifications ✓
+- [x] Send confirmation email when someone joins waitlist (Sandbox mode supported)
+- [x] Notify you (admin) when someone joins
+- [x] AWS SES integrated into Lambda
 
-### Phase 4: Email Notifications
-**Status**: Ready to implement
+---
 
-Features to add:
-- [ ] Send confirmation email when someone joins waitlist
-- [ ] Notify you (admin) when someone joins
-- [ ] Use AWS SES (Simple Email Service)
-
-**Estimated time**: 10 minutes
-
-### Phase 5: Admin Dashboard  
-**Status**: Ready to implement
-
-Features:
-- [ ] Simple web page to view all signups
-- [ ] Real-time count
-- [ ] Export to CSV
-- [ ] Protected with basic auth
-
-**Estimated time**: 15 minutes
+### Phase 5: Admin Dashboard ✓
+- [x] Admin page implemented (`admin.html`)
+- [x] Real-time data from API
+- [x] Export to CSV functional
+- [x] Protected with `ADMIN_SECRET`
 
 ---
 
@@ -93,14 +52,12 @@ Features:
 
 | Component | Status | URL/Endpoint |
 |-----------|--------|--------------|
-| **S3 Bucket** | ✅ Live | http://aicareeragentcoach.agency.s3-website-us-east-1.amazonaws.com |
-| **Waitlist API** | ✅ Live | https://zp2p756qze.execute-api.us-east-1.amazonaws.com/prod/waitlist |
-| **DynamoDB** | ✅ Active | aicareer-landing-waitlist |
-| **SSL Certificate** | ⏳ Pending | Waiting for DNS validation |
-| **CloudFront** | ⏸️ Ready | Run after SSL validated |
-| **Custom Domain** | ⏸️ Ready | Add DNS after CloudFront |
-| **Email Notifications** | 📝 Planned | - |
-| **Admin Dashboard** | 📝 Planned | - |
+| **Production Site** | ✅ LIVE (HTTPS) | https://aicareeragentcoach.agency |
+| **Waitlist API** | ✅ Fixed/Live | https://zp2p756qze.execute-api.us-east-1.amazonaws.com/prod/waitlist |
+| **Admin Panel** | ✅ Live | https://aicareeragentcoach.agency/admin.html |
+| **SSL/CDN** | ✅ Active | CloudFront + ACM (us-east-1) |
+| **Email Notifs** | ✅ Active | SES (check sandbox status) |
+| **Favicons** | ✅ Fixed | Multires transparent icons |
 
 ---
 

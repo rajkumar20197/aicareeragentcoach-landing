@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { CountdownTimer } from './components/CountdownTimer';
 import { WaitlistForm } from './components/WaitlistForm';
 import { FeatureTeasers } from './components/FeatureTeasers';
 import { Workflow } from './components/Workflow';
+import { TeamSection } from './components/TeamSection';
+import { CountdownTimer } from './components/CountdownTimer';
 import './index.css';
 
 function App() {
@@ -37,7 +38,7 @@ function App() {
                 <motion.header
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="pt-8 pb-4 text-center"
+                    className="pt-12 pb-4 text-center"
                 >
                     {/* Logo */}
                     <motion.div
@@ -53,9 +54,9 @@ function App() {
                         />
                     </motion.div>
 
-                    <div className="inline-flex items-center gap-2 px-4 py-2 glassmorphism rounded-full text-sm text-gray-400">
-                        <span className="w-2 h-2 bg-cyan-electric rounded-full animate-pulse"></span>
-                        Currently in Development
+                    <div className="inline-flex items-center gap-2 px-4 py-2 glassmorphism rounded-full text-sm text-cyan-electric/80 border border-cyan-electric/20">
+                        <span className="w-2 h-2 bg-cyan-electric rounded-full animate-pulse shadow-[0_0_8px_rgba(0,243,255,0.8)]"></span>
+                        Platform Live & Active
                     </div>
                 </motion.header>
 
@@ -80,9 +81,9 @@ function App() {
                             transition={{ delay: 0.3 }}
                             className="text-lg sm:text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-8"
                         >
-                            Your Personal AI Career Architect is Being Trained.
+                            Your Personal AI Career Architect is Here.
                             <br className="hidden md:block" />
-                            <span className="text-cyan-electric/80">The old way of job hunting dies here.</span>
+                            <span className="text-cyan-electric/80 font-medium">The revolution of career growth starts now.</span>
                         </motion.p>
 
                         {/* Tech Stack Badges */}
@@ -95,16 +96,18 @@ function App() {
                             <div className="px-4 py-2 bg-dark-lighter/50 border border-cyan-electric/30 rounded-full text-xs md:text-sm text-gray-300">
                                 🤖 Powered by AWS + Claude AI
                             </div>
-                            <div className="px-4 py-2 bg-dark-lighter/50 border border-purple-vibrant/30 rounded-full text-xs md:text-sm text-gray-300">
-                                🎓 Built at Northeastern University
-                            </div>
+                        </motion.div>
+
+                        {/* Launch Countdown */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6 }}
+                            className="mt-12"
+                        >
+                            <CountdownTimer />
                         </motion.div>
                     </motion.div>
-
-                    {/* Countdown Timer */}
-                    <div className="mb-20 md:mb-32">
-                        <CountdownTimer />
-                    </div>
 
                     {/* Feature Teasers */}
                     <div className="mb-20 md:mb-32">
@@ -117,8 +120,13 @@ function App() {
                     </div>
 
                     {/* Waitlist Form */}
-                    <div className="mb-20">
+                    <div className="mb-20 md:mb-32">
                         <WaitlistForm />
+                    </div>
+
+                    {/* Team Section */}
+                    <div className="mb-20">
+                        <TeamSection />
                     </div>
                 </section>
 
@@ -126,23 +134,28 @@ function App() {
                 <motion.footer
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 1.5 }}
-                    className="text-center py-12 text-gray-500 text-sm"
+                    transition={{ delay: 0.5 }}
+                    className="text-center py-24 border-t border-white/5 bg-dark/30 backdrop-blur-sm"
                 >
-                    <p className="mb-4">
-                        Built by students, for the ambitious.
-                    </p>
-                    <div className="flex justify-center gap-6 mb-8">
-                        <a href="#" className="hover:text-cyan-electric transition-colors">
-                            Privacy Policy
-                        </a>
-                        <a href="#" className="hover:text-cyan-electric transition-colors">
-                            Terms
-                        </a>
+                    <div className="container mx-auto px-4">
+                        <p className="text-gray-400 mb-8 max-w-md mx-auto">
+                            Built by students, for the ambitious. Empowering the next generation of global talent.
+                        </p>
+                        <div className="flex justify-center gap-8 mb-12">
+                            <a href="#" className="text-gray-500 hover:text-cyan-electric transition-colors text-sm font-medium">
+                                Privacy Policy
+                            </a>
+                            <a href="#" className="text-gray-500 hover:text-cyan-electric transition-colors text-sm font-medium">
+                                Terms of Service
+                            </a>
+                            <a href="#" className="text-gray-500 hover:text-cyan-electric transition-colors text-sm font-medium">
+                                Contact Us
+                            </a>
+                        </div>
+                        <p className="text-xs text-gray-600 tracking-widest uppercase">
+                            © 2025 AI Career Agent Coach. All rights reserved.
+                        </p>
                     </div>
-                    <p className="text-xs text-gray-600">
-                        © 2025 AI Career Agent Coach. All rights reserved.
-                    </p>
                 </motion.footer>
             </div>
         </div>

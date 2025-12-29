@@ -1,0 +1,146 @@
+﻿{
+    "events": [
+        {
+            "logStreamName": "2025/12/28/[$LATEST]0ba8230898084f93b836261d54b3ca5c",
+            "timestamp": 1766901077058,
+            "message": "INIT_START Runtime Version: nodejs:20.v93\tRuntime Version ARN: arn:aws:lambda:us-east-1::runtime:a245a9f616c3bd5592157d3573155529391e9c7136cc9650a239d736763a026c\n",
+            "ingestionTime": 1766901077498,
+            "eventId": "39403210710479780069911412525412621380583027330317025280"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]0ba8230898084f93b836261d54b3ca5c",
+            "timestamp": 1766901077423,
+            "message": "START RequestId: 37570a9a-ac5a-406b-bb74-a68767e42a2c Version: $LATEST\n",
+            "ingestionTime": 1766901086441,
+            "eventId": "39403210718619552067375089982884399949216892460266749952"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]0ba8230898084f93b836261d54b3ca5c",
+            "timestamp": 1766901077424,
+            "message": "2025-12-28T05:51:17.424Z\t37570a9a-ac5a-406b-bb74-a68767e42a2c\tINFO\tEvent: {\n  \"resource\": \"/waitlist\",\n  \"path\": \"/waitlist\",\n  \"httpMethod\": \"POST\",\n  \"headers\": {\n    \"Content-Type\": \"application/json\",\n    \"Host\": \"zp2p756qze.execute-api.us-east-1.amazonaws.com\",\n    \"User-Agent\": \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.7462\",\n    \"X-Amzn-Trace-Id\": \"Root=1-6950c554-70dc990b2aafdb30516ab3f9\",\n    \"X-Forwarded-For\": \"98.33.109.131\",\n    \"X-Forwarded-Port\": \"443\",\n    \"X-Forwarded-Proto\": \"https\"\n  },\n  \"multiValueHeaders\": {\n    \"Content-Type\": [\n      \"application/json\"\n    ],\n    \"Host\": [\n      \"zp2p756qze.execute-api.us-east-1.amazonaws.com\"\n    ],\n    \"User-Agent\": [\n      \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.7462\"\n    ],\n    \"X-Amzn-Trace-Id\": [\n      \"Root=1-6950c554-70dc990b2aafdb30516ab3f9\"\n    ],\n    \"X-Forwarded-For\": [\n      \"98.33.109.131\"\n    ],\n    \"X-Forwarded-Port\": [\n      \"443\"\n    ],\n    \"X-Forwarded-Proto\": [\n      \"https\"\n    ]\n  },\n  \"queryStringParameters\": null,\n  \"multiValueQueryStringParameters\": null,\n  \"pathParameters\": null,\n  \"stageVariables\": null,\n  \"requestContext\": {\n    \"resourceId\": \"v3sphl\",\n    \"resourcePath\": \"/waitlist\",\n    \"httpMethod\": \"POST\",\n    \"extendedRequestId\": \"WSPFUFjfoAMEJdA=\",\n    \"requestTime\": \"28/Dec/2025:05:51:16 +0000\",\n    \"path\": \"/prod/waitlist\",\n    \"accountId\": \"980826468182\",\n    \"protocol\": \"HTTP/1.1\",\n    \"stage\": \"prod\",\n    \"domainPrefix\": \"zp2p756qze\",\n    \"requestTimeEpoch\": 1766901076813,\n    \"requestId\": \"8b73ea35-df4f-4e04-ab1a-0e884663fce1\",\n    \"identity\": {\n      \"cognitoIdentityPoolId\": null,\n      \"accountId\": null,\n      \"cognitoIdentityId\": null,\n      \"caller\": null,\n      \"sourceIp\": \"98.33.109.131\",\n      \"principalOrgId\": null,\n      \"accessKey\": null,\n      \"cognitoAuthenticationType\": null,\n      \"cognitoAuthenticationProvider\": null,\n      \"userArn\": null,\n      \"userAgent\": \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.7462\",\n      \"user\": null\n    },\n    \"domainName\": \"zp2p756qze.execute-api.us-east-1.amazonaws.com\",\n    \"deploymentId\": \"e364ci\",\n    \"apiId\": \"zp2p756qze\"\n  },\n  \"body\": \"{\\r\\n    \\\"email\\\":  \\\"test-1002088989@example.com\\\"\\r\\n}\",\n  \"isBase64Encoded\": false\n}\n",
+            "ingestionTime": 1766901086441,
+            "eventId": "39403210718641852812573620606025935667489540821772730369"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]0ba8230898084f93b836261d54b3ca5c",
+            "timestamp": 1766901077919,
+            "message": "2025-12-28T05:51:17.919Z\t37570a9a-ac5a-406b-bb74-a68767e42a2c\tINFO\tEmail stored successfully: test-1002088989@example.com\n",
+            "ingestionTime": 1766901086441,
+            "eventId": "39403210729680721685846279061086116212450479767233036290"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]0ba8230898084f93b836261d54b3ca5c",
+            "timestamp": 1766901077921,
+            "message": "END RequestId: 37570a9a-ac5a-406b-bb74-a68767e42a2c\n",
+            "ingestionTime": 1766901086441,
+            "eventId": "39403210729725323176243340307369187648995776490244997123"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]0ba8230898084f93b836261d54b3ca5c",
+            "timestamp": 1766901077921,
+            "message": "REPORT RequestId: 37570a9a-ac5a-406b-bb74-a68767e42a2c\tDuration: 498.17 ms\tBilled Duration: 859 ms\tMemory Size: 256 MB\tMax Memory Used: 89 MB\tInit Duration: 360.55 ms\t\n",
+            "ingestionTime": 1766901086441,
+            "eventId": "39403210729725323176243340307369187648995776490244997124"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]3aaceeb2cc234db78c874eda8b7f92ee",
+            "timestamp": 1766904088505,
+            "message": "INIT_START Runtime Version: nodejs:20.v93\tRuntime Version ARN: arn:aws:lambda:us-east-1::runtime:a245a9f616c3bd5592157d3573155529391e9c7136cc9650a239d736763a026c\n",
+            "ingestionTime": 1766904089822,
+            "eventId": "39403277867992005949360883875403038740736182108210659328"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]3aaceeb2cc234db78c874eda8b7f92ee",
+            "timestamp": 1766904088902,
+            "message": "START RequestId: cd2bd38b-dbee-468d-a5c5-8d5759f4b8d7 Version: $LATEST\n",
+            "ingestionTime": 1766904089822,
+            "eventId": "39403277876845401793177541262592718894977581626084884481"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]3aaceeb2cc234db78c874eda8b7f92ee",
+            "timestamp": 1766904088904,
+            "message": "2025-12-28T06:41:28.904Z\tcd2bd38b-dbee-468d-a5c5-8d5759f4b8d7\tINFO\tEvent: {\n  \"resource\": \"/waitlist\",\n  \"path\": \"/waitlist\",\n  \"httpMethod\": \"POST\",\n  \"headers\": {\n    \"Content-Type\": \"application/json\",\n    \"Host\": \"zp2p756qze.execute-api.us-east-1.amazonaws.com\",\n    \"User-Agent\": \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.7462\",\n    \"X-Amzn-Trace-Id\": \"Root=1-6950d118-0ab470a50ccb5a584d314b9e\",\n    \"X-Forwarded-For\": \"98.33.109.131\",\n    \"X-Forwarded-Port\": \"443\",\n    \"X-Forwarded-Proto\": \"https\"\n  },\n  \"multiValueHeaders\": {\n    \"Content-Type\": [\n      \"application/json\"\n    ],\n    \"Host\": [\n      \"zp2p756qze.execute-api.us-east-1.amazonaws.com\"\n    ],\n    \"User-Agent\": [\n      \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.7462\"\n    ],\n    \"X-Amzn-Trace-Id\": [\n      \"Root=1-6950d118-0ab470a50ccb5a584d314b9e\"\n    ],\n    \"X-Forwarded-For\": [\n      \"98.33.109.131\"\n    ],\n    \"X-Forwarded-Port\": [\n      \"443\"\n    ],\n    \"X-Forwarded-Proto\": [\n      \"https\"\n    ]\n  },\n  \"queryStringParameters\": null,\n  \"multiValueQueryStringParameters\": null,\n  \"pathParameters\": null,\n  \"stageVariables\": null,\n  \"requestContext\": {\n    \"resourceId\": \"v3sphl\",\n    \"resourcePath\": \"/waitlist\",\n    \"httpMethod\": \"POST\",\n    \"extendedRequestId\": \"WSWb3HgtIAMEJ0A=\",\n    \"requestTime\": \"28/Dec/2025:06:41:28 +0000\",\n    \"path\": \"/prod/waitlist\",\n    \"accountId\": \"980826468182\",\n    \"protocol\": \"HTTP/1.1\",\n    \"stage\": \"prod\",\n    \"domainPrefix\": \"zp2p756qze\",\n    \"requestTimeEpoch\": 1766904088337,\n    \"requestId\": \"09b3579f-197f-4a2f-96d7-f757602529ea\",\n    \"identity\": {\n      \"cognitoIdentityPoolId\": null,\n      \"accountId\": null,\n      \"cognitoIdentityId\": null,\n      \"caller\": null,\n      \"sourceIp\": \"98.33.109.131\",\n      \"principalOrgId\": null,\n      \"accessKey\": null,\n      \"cognitoAuthenticationType\": null,\n      \"cognitoAuthenticationProvider\": null,\n      \"userArn\": null,\n      \"userAgent\": \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.7462\",\n      \"user\": null\n    },\n    \"domainName\": \"zp2p756qze.execute-api.us-east-1.amazonaws.com\",\n    \"deploymentId\": \"e364ci\",\n    \"apiId\": \"zp2p756qze\"\n  },\n  \"body\": \"{\\r\\n    \\\"email\\\":  \\\"test-1401459568@example.com\\\"\\r\\n}\",\n  \"isBase64Encoded\": false\n}\n",
+            "ingestionTime": 1766904089822,
+            "eventId": "39403277876890003283574602508875790331522878349096845314"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]3aaceeb2cc234db78c874eda8b7f92ee",
+            "timestamp": 1766904089393,
+            "message": "2025-12-28T06:41:29.393Z\tcd2bd38b-dbee-468d-a5c5-8d5759f4b8d7\tINFO\tEmail stored successfully: test-1401459568@example.com\n",
+            "ingestionTime": 1766904089822,
+            "eventId": "39403277887795067685656077225086756566847927125521268739"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]3aaceeb2cc234db78c874eda8b7f92ee",
+            "timestamp": 1766904089397,
+            "message": "END RequestId: cd2bd38b-dbee-468d-a5c5-8d5759f4b8d7\n",
+            "ingestionTime": 1766904089822,
+            "eventId": "39403277887884270666450199717652899439938520571545190404"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]3aaceeb2cc234db78c874eda8b7f92ee",
+            "timestamp": 1766904089397,
+            "message": "REPORT RequestId: cd2bd38b-dbee-468d-a5c5-8d5759f4b8d7\tDuration: 494.54 ms\tBilled Duration: 889 ms\tMemory Size: 256 MB\tMax Memory Used: 90 MB\tInit Duration: 393.95 ms\t\n",
+            "ingestionTime": 1766904089822,
+            "eventId": "39403277887884270666450199717652899439938520571545190405"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]565ddef164df433780913ffe8991ce38",
+            "timestamp": 1766906771373,
+            "message": "INIT_START Runtime Version: nodejs:20.v93\tRuntime Version ARN: arn:aws:lambda:us-east-1::runtime:a245a9f616c3bd5592157d3573155529391e9c7136cc9650a239d736763a026c\n",
+            "ingestionTime": 1766906775404,
+            "eventId": "39403337697947675240816733607722138536063157592373329920"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]565ddef164df433780913ffe8991ce38",
+            "timestamp": 1766906771782,
+            "message": "START RequestId: 727d7561-f8b2-497a-a612-aab44b7d123c Version: $LATEST\n",
+            "ingestionTime": 1766906775404,
+            "eventId": "39403337707068680027015758472610247309576337448319320065"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]565ddef164df433780913ffe8991ce38",
+            "timestamp": 1766906771784,
+            "message": "2025-12-28T07:26:11.784Z\t727d7561-f8b2-497a-a612-aab44b7d123c\tINFO\tEvent: {\n  \"resource\": \"/waitlist\",\n  \"path\": \"/waitlist\",\n  \"httpMethod\": \"POST\",\n  \"headers\": {\n    \"Content-Type\": \"application/json\",\n    \"Host\": \"zp2p756qze.execute-api.us-east-1.amazonaws.com\",\n    \"User-Agent\": \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.7462\",\n    \"X-Amzn-Trace-Id\": \"Root=1-6950db93-7299746a6f1618a80e4c7248\",\n    \"X-Forwarded-For\": \"98.33.109.131\",\n    \"X-Forwarded-Port\": \"443\",\n    \"X-Forwarded-Proto\": \"https\"\n  },\n  \"multiValueHeaders\": {\n    \"Content-Type\": [\n      \"application/json\"\n    ],\n    \"Host\": [\n      \"zp2p756qze.execute-api.us-east-1.amazonaws.com\"\n    ],\n    \"User-Agent\": [\n      \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.7462\"\n    ],\n    \"X-Amzn-Trace-Id\": [\n      \"Root=1-6950db93-7299746a6f1618a80e4c7248\"\n    ],\n    \"X-Forwarded-For\": [\n      \"98.33.109.131\"\n    ],\n    \"X-Forwarded-Port\": [\n      \"443\"\n    ],\n    \"X-Forwarded-Proto\": [\n      \"https\"\n    ]\n  },\n  \"queryStringParameters\": null,\n  \"multiValueQueryStringParameters\": null,\n  \"pathParameters\": null,\n  \"stageVariables\": null,\n  \"requestContext\": {\n    \"resourceId\": \"v3sphl\",\n    \"resourcePath\": \"/waitlist\",\n    \"httpMethod\": \"POST\",\n    \"extendedRequestId\": \"WSc_EFD_IAMEJNg=\",\n    \"requestTime\": \"28/Dec/2025:07:26:11 +0000\",\n    \"path\": \"/prod/waitlist\",\n    \"accountId\": \"980826468182\",\n    \"protocol\": \"HTTP/1.1\",\n    \"stage\": \"prod\",\n    \"domainPrefix\": \"zp2p756qze\",\n    \"requestTimeEpoch\": 1766906771214,\n    \"requestId\": \"77ef98f5-b97e-4df6-989d-7a8da6719a32\",\n    \"identity\": {\n      \"cognitoIdentityPoolId\": null,\n      \"accountId\": null,\n      \"cognitoIdentityId\": null,\n      \"caller\": null,\n      \"sourceIp\": \"98.33.109.131\",\n      \"principalOrgId\": null,\n      \"accessKey\": null,\n      \"cognitoAuthenticationType\": null,\n      \"cognitoAuthenticationProvider\": null,\n      \"userArn\": null,\n      \"userAgent\": \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.7462\",\n      \"user\": null\n    },\n    \"domainName\": \"zp2p756qze.execute-api.us-east-1.amazonaws.com\",\n    \"deploymentId\": \"e364ci\",\n    \"apiId\": \"zp2p756qze\"\n  },\n  \"body\": \"{\\r\\n    \\\"email\\\":  \\\"test-1811697440@example.com\\\"\\r\\n}\",\n  \"isBase64Encoded\": false\n}\n",
+            "ingestionTime": 1766906775404,
+            "eventId": "39403337707113281517412819718893318746121634171331280898"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]565ddef164df433780913ffe8991ce38",
+            "timestamp": 1766906772293,
+            "message": "2025-12-28T07:26:12.293Z\t727d7561-f8b2-497a-a612-aab44b7d123c\tINFO\tEmail stored successfully: test-1811697440@example.com\n",
+            "ingestionTime": 1766906775404,
+            "eventId": "39403337718464360823464906897934999346899650177875312643"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]565ddef164df433780913ffe8991ce38",
+            "timestamp": 1766906772296,
+            "message": "END RequestId: 727d7561-f8b2-497a-a612-aab44b7d123c\n",
+            "ingestionTime": 1766906775404,
+            "eventId": "39403337718531263059060498767359606501717595262393253892"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]565ddef164df433780913ffe8991ce38",
+            "timestamp": 1766906772296,
+            "message": "REPORT RequestId: 727d7561-f8b2-497a-a612-aab44b7d123c\tDuration: 513.81 ms\tBilled Duration: 919 ms\tMemory Size: 256 MB\tMax Memory Used: 91 MB\tInit Duration: 404.84 ms\t\n",
+            "ingestionTime": 1766906775404,
+            "eventId": "39403337718531263059060498767359606501717595262393253893"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]18929b25d2ab4816914fbb55cef9346c",
+            "timestamp": 1766907521654,
+            "message": "INIT_START Runtime Version: nodejs:20.v93\tRuntime Version ARN: arn:aws:lambda:us-east-1::runtime:a245a9f616c3bd5592157d3573155529391e9c7136cc9650a239d736763a026c\n",
+            "ingestionTime": 1766907527883,
+            "eventId": "39403354429773083539571195771973661027282541780655079424"
+        },
+        {
+            "logStreamName": "2025/12/28/[$LATEST]18929b25d2ab4816914fbb55cef9346c",
+            "timestamp": 1766907522039,
+            "message": "START RequestId: 5210f510-eacd-479d-928a-7986207f02c3 Version: $LATEST\n",
+            "ingestionTime": 1766907527883,
+            "eventId": "39403354438358870441005485681464912562252160960457539585"
+        }
+    ],
+    "searchedLogStreams": [],
+    "nextToken": "Bxkq6kVGFtq2y_MoigeqscPOdhXVbhiVtLoAmXb5jCqu8ovVrnt3RAjj2Kgpw3sMbo7jm3xzOhsw1cHPbLTIZw3yeBeX1lx2cK7xLHkBBWJYGJEHrOje9HqJms3knuRRYmPv-YuMm0H8UYzolQhgqtn4WUk9kQVX-_sYux9pI0WYDdIUJNNrDALczYFd6r2oeS0Qj19bDGZQApE6rwl1XENbmWPc9_g0QhuDwAbUCmi85AfDho0E29CgTcMwRZfavPlfYB20d2qtNHMZZSd8lt9t78yKNik5xBxdnGDJltE"
+}

@@ -1,0 +1,15 @@
+﻿{
+    "logStreams": [
+        {
+            "logStreamName": "2025/12/28/[$LATEST]73f2e7b2958b4b8f81e99fd7e68b7229",
+            "creationTime": 1766915246551,
+            "firstEventTimestamp": 1766915240658,
+            "lastEventTimestamp": 1766915241935,
+            "lastIngestionTime": 1766915246559,
+            "uploadSequenceToken": "49039859656341655372897200155032574970327112115419070397",
+            "arn": "arn:aws:logs:us-east-1:980826468182:log-group:/aws/lambda/aicareer-waitlist-handler:log-stream:2025/12/28/[$LATEST]73f2e7b2958b4b8f81e99fd7e68b7229",
+            "storedBytes": 0
+        }
+    ],
+    "nextToken": "Kwfr0bfVKkYk4OrYazFRiUvQVr1gn5Bwo2N3y5SjFsdkFK7xfkGD1VheG-IqVjyG4lnOJKHkMMzBpPzSXp9ud4K7Ylqhwgu2-3wiiteXcR_xD3GHs3D3EgFrsou8Tds78UYX7uU_EivNW0-5t2wctFTwYQkR3O28UNcQ-FbOrctdI_wKx0L6vk5agmPMwyIUVBGYrLggM3zHpphoRYQ8GQLrPAIL3h9NnX3ZcTW38Hf03gHv_BYDbzOzouEkPEcla1ZNvQt5EvdQj7iio-NyOuAPkvrNYgfqcNrkPo1U45nHPd3XhVLmLCRuiTYXxLTd2vVwLJcltRd0J1c5UHhU3nmPKtAhc5z-9Vb1fjwkhl6F6ePZHIfJFDj5b2YUA5TS998czD9_JJ_yY47mbAFvkSOSAcpSEGz0eXf3ZVHpHDU"
+}

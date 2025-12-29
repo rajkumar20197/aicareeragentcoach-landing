@@ -20,6 +20,24 @@ Resources:
         - Key: Environment
           Value: Production
 
+  # DynamoDB Table for storing partnership inquiries
+  PartnershipTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: aicareer-landing-partnerships
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+      Tags:
+        - Key: Project
+          Value: AI-Career-Agent-Landing
+        - Key: Environment
+          Value: Production
+
   # IAM Role for Lambda Function
   WaitlistLambdaRole:
     Type: AWS::IAM::Role
@@ -45,7 +63,18 @@ Resources:
                   - dynamodb:GetItem
                   - dynamodb:Query
                   - dynamodb:Scan
-                Resource: !GetAtt WaitlistTable.Arn
+                Resource:
+                  - !GetAtt WaitlistTable.Arn
+                  - !GetAtt PartnershipTable.Arn
+        - PolicyName: SESAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ses:SendEmail
+                  - ses:SendRawEmail
+                Resource: "*"
 
   # Lambda Function
   WaitlistFunction:
@@ -60,8 +89,11 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref WaitlistTable
+          PARTNERSHIP_TABLE_NAME: !Ref PartnershipTable
           CORS_ORIGIN: "*"
-          ADMIN_SECRET: "aicareer2025" # You can change this later
+          ADMIN_SECRET: "aicareer2025"
+          ADMIN_EMAIL: "rajkumarthota20197@gmail.com"
+          FROM_EMAIL: "rajkumarthota20197@gmail.com"
       Code:
         ZipFile: |
           exports.handler = async (event) => {
@@ -155,10 +187,11 @@ Resources:
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WaitlistApi}/*/*
 
   # API Gateway Deployment
-  WaitlistApiDeployment:
+  WaitlistApiDeploymentV2:
     Type: AWS::ApiGateway::Deployment
     DependsOn:
       - WaitlistPostMethod
+      - WaitlistGetMethod
       - WaitlistOptionsMethod
     Properties:
       RestApiId: !Ref WaitlistApi
@@ -168,7 +201,7 @@ Resources:
     Type: AWS::ApiGateway::Stage
     Properties:
       RestApiId: !Ref WaitlistApi
-      DeploymentId: !Ref WaitlistApiDeployment
+      DeploymentId: !Ref WaitlistApiDeploymentV2
       StageName: prod
       Description: Production stage
 

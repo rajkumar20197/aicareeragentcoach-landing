@@ -1,0 +1,61 @@
+﻿{
+    "events": [
+        {
+            "timestamp": 1766915240658,
+            "message": "INIT_START Runtime Version: nodejs:20.v93\tRuntime Version ARN: arn:aws:lambda:us-east-1::runtime:a245a9f616c3bd5592157d3573155529391e9c7136cc9650a239d736763a026c\n",
+            "ingestionTime": 1766915246559
+        },
+        {
+            "timestamp": 1766915241062,
+            "message": "START RequestId: fe04a55f-4fd5-40ad-9816-9666969af1e9 Version: $LATEST\n",
+            "ingestionTime": 1766915246559
+        },
+        {
+            "timestamp": 1766915241064,
+            "message": "2025-12-28T09:47:21.064Z\tfe04a55f-4fd5-40ad-9816-9666969af1e9\tINFO\tEvent received: {\"resource\":\"/waitlist\",\"path\":\"/waitlist\",\"httpMethod\":\"POST\",\"headers\":{\"accept\":\"*/*\",\"accept-encoding\":\"gzip, deflate, br, zstd\",\"accept-language\":\"en-GB,en-US;q=0.9,en;q=0.8\",\"content-type\":\"application/json\",\"Host\":\"zp2p756qze.execute-api.us-east-1.amazonaws.com\",\"origin\":\"https://aicareeragentcoach.agency\",\"priority\":\"u=1, i\",\"referer\":\"https://aicareeragentcoach.agency/\",\"sec-ch-ua\":\"\\\"Google Chrome\\\";v=\\\"143\\\", \\\"Chromium\\\";v=\\\"143\\\", \\\"Not A(Brand\\\";v=\\\"24\\\"\",\"sec-ch-ua-mobile\":\"?0\",\"sec-ch-ua-platform\":\"\\\"Windows\\\"\",\"sec-fetch-dest\":\"empty\",\"sec-fetch-mode\":\"cors\",\"sec-fetch-site\":\"cross-site\",\"User-Agent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\",\"X-Amzn-Trace-Id\":\"Root=1-6950fca8-0ac7a1f72efc927c46305ea5\",\"X-Forwarded-For\":\"98.33.109.131\",\"X-Forwarded-Port\":\"443\",\"X-Forwarded-Proto\":\"https\"},\"multiValueHeaders\":{\"accept\":[\"*/*\"],\"accept-encoding\":[\"gzip, deflate, br, zstd\"],\"accept-language\":[\"en-GB,en-US;q=0.9,en;q=0.8\"],\"content-type\":[\"application/json\"],\"Host\":[\"zp2p756qze.execute-api.us-east-1.amazonaws.com\"],\"origin\":[\"https://aicareeragentcoach.agency\"],\"priority\":[\"u=1, i\"],\"referer\":[\"https://aicareeragentcoach.agency/\"],\"sec-ch-ua\":[\"\\\"Google Chrome\\\";v=\\\"143\\\", \\\"Chromium\\\";v=\\\"143\\\", \\\"Not A(Brand\\\";v=\\\"24\\\"\"],\"sec-ch-ua-mobile\":[\"?0\"],\"sec-ch-ua-platform\":[\"\\\"Windows\\\"\"],\"sec-fetch-dest\":[\"empty\"],\"sec-fetch-mode\":[\"cors\"],\"sec-fetch-site\":[\"cross-site\"],\"User-Agent\":[\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\"],\"X-Amzn-Trace-Id\":[\"Root=1-6950fca8-0ac7a1f72efc927c46305ea5\"],\"X-Forwarded-For\":[\"98.33.109.131\"],\"X-Forwarded-Port\":[\"443\"],\"X-Forwarded-Proto\":[\"https\"]},\"queryStringParameters\":null,\"multiValueQueryStringParameters\":null,\"pathParameters\":null,\"stageVariables\":null,\"requestContext\":{\"resourceId\":\"v3sphl\",\"resourcePath\":\"/waitlist\",\"httpMethod\":\"POST\",\"extendedRequestId\":\"WSxqYHbxIAMEDBw=\",\"requestTime\":\"28/Dec/2025:09:47:20 +0000\",\"path\":\"/prod/waitlist\",\"accountId\":\"980826468182\",\"protocol\":\"HTTP/1.1\",\"stage\":\"prod\",\"domainPrefix\":\"zp2p756qze\",\"requestTimeEpoch\":1766915240482,\"requestId\":\"ec4f0c67-e5ad-4b78-96eb-35ede92c99b8\",\"identity\":{\"cognitoIdentityPoolId\":null,\"accountId\":null,\"cognitoIdentityId\":null,\"caller\":null,\"sourceIp\":\"98.33.109.131\",\"principalOrgId\":null,\"accessKey\":null,\"cognitoAuthenticationType\":null,\"cognitoAuthenticationProvider\":null,\"userArn\":null,\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\",\"user\":null},\"domainName\":\"zp2p756qze.execute-api.us-east-1.amazonaws.com\",\"deploymentId\":\"e364ci\",\"apiId\":\"zp2p756qze\"},\"body\":\"{\\\"email\\\":\\\"vivekmurugesan08@gmail.com\\\"}\",\"isBase64Encoded\":false}\n",
+            "ingestionTime": 1766915246559
+        },
+        {
+            "timestamp": 1766915241066,
+            "message": "2025-12-28T09:47:21.066Z\tfe04a55f-4fd5-40ad-9816-9666969af1e9\tINFO\tProcessing signup for: vivekmurugesan08@gmail.com\n",
+            "ingestionTime": 1766915246559
+        },
+        {
+            "timestamp": 1766915241514,
+            "message": "2025-12-28T09:47:21.514Z\tfe04a55f-4fd5-40ad-9816-9666969af1e9\tINFO\tStored vivekmurugesan08@gmail.com in DynamoDB\n",
+            "ingestionTime": 1766915246559
+        },
+        {
+            "timestamp": 1766915241514,
+            "message": "2025-12-28T09:47:21.514Z\tfe04a55f-4fd5-40ad-9816-9666969af1e9\tINFO\tAttempting to send email from rajkumarthota20197@gmail.com to vivekmurugesan08@gmail.com\n",
+            "ingestionTime": 1766915246559
+        },
+        {
+            "timestamp": 1766915241714,
+            "message": "2025-12-28T09:47:21.714Z\tfe04a55f-4fd5-40ad-9816-9666969af1e9\tINFO\tAttempting to send email from rajkumarthota20197@gmail.com to rajkumarthota20197@gmail.com\n",
+            "ingestionTime": 1766915246559
+        },
+        {
+            "timestamp": 1766915241896,
+            "message": "2025-12-28T09:47:21.896Z\tfe04a55f-4fd5-40ad-9816-9666969af1e9\tERROR\tFAILED to send email to vivekmurugesan08@gmail.com: Email address is not verified. The following identities failed the check in region US-EAST-1: vivekmurugesan08@gmail.com\n",
+            "ingestionTime": 1766915246559
+        },
+        {
+            "timestamp": 1766915241915,
+            "message": "2025-12-28T09:47:21.915Z\tfe04a55f-4fd5-40ad-9816-9666969af1e9\tINFO\tSuccessfully sent email to rajkumarthota20197@gmail.com\n",
+            "ingestionTime": 1766915246559
+        },
+        {
+            "timestamp": 1766915241935,
+            "message": "END RequestId: fe04a55f-4fd5-40ad-9816-9666969af1e9\n",
+            "ingestionTime": 1766915246559
+        },
+        {
+            "timestamp": 1766915241935,
+            "message": "REPORT RequestId: fe04a55f-4fd5-40ad-9816-9666969af1e9\tDuration: 872.45 ms\tBilled Duration: 1273 ms\tMemory Size: 256 MB\tMax Memory Used: 99 MB\tInit Duration: 400.05 ms\t\n",
+            "ingestionTime": 1766915246559
+        }
+    ],
+    "nextForwardToken": "f/39403526597792525596768962861796548631096298877977755658/s",
+    "nextBackwardToken": "b/39403526569314473978245357110055436396924341234840764416/s"
+}

@@ -3,8 +3,15 @@
 Landing page for **aicareeragentcoach.agency**
 
 ## 🎯 Live Site
-- **Production:** https://aicareeragentcoach.agency
-- **Alternate:** https://www.aicareeragentcoach.agency
+
+### Current Access (HTTP)
+- **S3 Endpoint:** http://aicareeragentcoach.agency.s3-website-us-east-1.amazonaws.com
+
+### Production URLs (After DNS Setup)
+- **Primary:** https://aicareeragentcoach.agency
+- **WWW:** https://www.aicareeragentcoach.agency
+
+> 📝 See `LIVE_DEPLOYMENT_INFO.md` for complete deployment details and next steps
 
 ## 🚀 Quick Deploy to AWS
 

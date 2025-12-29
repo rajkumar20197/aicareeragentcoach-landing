@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -182,14 +183,17 @@
         }
     </style>
 </head>
+
 <body>
     <div id="login-overlay">
         <div class="login-card">
             <h1>Admin Login</h1>
             <p style="color: var(--text-dim); margin-bottom: 30px;">Enter secret key to view waitlist</p>
-            <input type="password" id="secret-input" placeholder="Enter secret key..." style="width: 100%; box-sizing: border-box; margin-bottom: 20px;">
+            <input type="password" id="secret-input" placeholder="Enter secret key..."
+                style="width: 100%; box-sizing: border-box; margin-bottom: 20px;">
             <button onclick="login()" style="width: 100%;">Login</button>
-            <p id="login-error" style="color: #ef4444; font-size: 14px; margin-top: 15px; display: none;">Invalid secret key</p>
+            <p id="login-error" style="color: #ef4444; font-size: 14px; margin-top: 15px; display: none;">Invalid secret
+                key</p>
         </div>
     </div>
 
@@ -213,6 +217,11 @@
         </div>
 
         <div class="controls">
+            <select id="type-selector" onchange="fetchSignups()"
+                style="background: var(--surface); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 10px 15px; border-radius: 8px; font-family: inherit; cursor: pointer;">
+                <option value="standard">Standard Waitlist</option>
+                <option value="partnership">Partnership Inquiries</option>
+            </select>
             <button onclick="fetchSignups()">Refresh Data</button>
             <button class="secondary" onclick="exportToCSV()">Export CSV</button>
         </div>
@@ -234,10 +243,10 @@
         async function login() {
             const input = document.getElementById('secret-input').value;
             if (!input) return;
-            
+
             secret = input;
             const success = await fetchSignups();
-            
+
             if (success) {
                 localStorage.setItem('admin_secret', secret);
                 document.getElementById('login-overlay').style.display = 'none';
@@ -253,10 +262,11 @@
 
         async function fetchSignups() {
             const errorBox = document.getElementById('error-box');
+            const type = document.getElementById('type-selector').value;
             errorBox.style.display = 'none';
-            
+
             try {
-                const response = await fetch(API_ENDPOINT, {
+                const response = await fetch(`${API_ENDPOINT}?type=${type}`, {
                     headers: {
                         'x-admin-secret': secret
                     }
@@ -268,8 +278,8 @@
                 }
 
                 const data = await response.json();
-                renderTable(data.signups);
-                document.getElementById('total-count').textContent = data.count;
+                renderTable(data.items);
+                document.getElementById('total-count').textContent = data.items ? data.items.length : 0;
                 return true;
             } catch (err) {
                 console.error(err);
@@ -281,8 +291,9 @@
 
         function renderTable(signups) {
             const container = document.getElementById('table-container');
+            const type = document.getElementById('type-selector').value;
             if (!signups || signups.length === 0) {
-                container.innerHTML = '<div class="loading">No signups yet</div>';
+                container.innerHTML = `<div class="loading">No ${type} signups yet</div>`;
                 return;
             }
 
@@ -292,7 +303,7 @@
                         <tr>
                             <th>Email</th>
                             <th>Date Joined</th>
-                            <th>Source</th>
+                            <th>Type</th>
                             <th>IP Address</th>
                         </tr>
                     </thead>
@@ -301,18 +312,17 @@
 
             signups.forEach(s => {
                 const date = new Date(s.timestamp).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    month: 'short', day: 'numeric', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
                 });
+
+                const badgeClass = s.subscriptionType === 'partnership' ? 'style="background:rgba(184, 109, 255, 0.1); color:#b86dff;"' : '';
 
                 html += `
                     <tr>
                         <td><strong>${s.email}</strong></td>
                         <td>${date}</td>
-                        <td><span class="badge">${s.source || 'landing'}</span></td>
+                        <td><span class="badge" ${badgeClass}>${s.subscriptionType || 'standard'}</span></td>
                         <td style="color: var(--text-dim); font-family: monospace;">${s.ipAddress || 'unknown'}</td>
                     </tr>
                 `;
@@ -324,23 +334,21 @@
 
         function exportToCSV() {
             const table = document.querySelector('table');
+            const type = document.getElementById('type-selector').value;
             if (!table) return;
 
             let csv = [];
             const rows = table.querySelectorAll('tr');
-            
+
             for (let i = 0; i < rows.length; i++) {
                 const row = [], cols = rows[i].querySelectorAll('td, th');
-                
-                for (let j = 0; j < cols.length; j++) 
-                    row.push('"' + cols[j].innerText + '"');
-                
-                csv.push(row.join(','));        
+                for (let j = 0; j < cols.length; j++) row.push('"' + cols[j].innerText + '"');
+                csv.push(row.join(','));
             }
 
-            const csvFile = new Blob([csv.join('\n')], {type: 'text/csv'});
+            const csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
             const downloadLink = document.createElement('a');
-            downloadLink.download = 'aicareer-waitlist-' + new Date().toISOString().split('T')[0] + '.csv';
+            downloadLink.download = `aicareer-${type}-list-${new Date().toISOString().split('T')[0]}.csv`;
             downloadLink.href = window.URL.createObjectURL(csvFile);
             downloadLink.style.display = 'none';
             document.body.appendChild(downloadLink);
@@ -348,4 +356,5 @@
         }
     </script>
 </body>
+
 </html>

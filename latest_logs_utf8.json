@@ -1,0 +1,31 @@
+﻿{
+    "events": [
+        {
+            "timestamp": 1766913795137,
+            "message": "INIT_START Runtime Version: nodejs:20.v93\tRuntime Version ARN: arn:aws:lambda:us-east-1::runtime:a245a9f616c3bd5592157d3573155529391e9c7136cc9650a239d736763a026c\n",
+            "ingestionTime": 1766913799514
+        },
+        {
+            "timestamp": 1766913795555,
+            "message": "START RequestId: c2ebe1f5-a9ab-4cfb-97c6-ff93f2a52ad3 Version: $LATEST\n",
+            "ingestionTime": 1766913799514
+        },
+        {
+            "timestamp": 1766913795557,
+            "message": "2025-12-28T09:23:15.557Z\tc2ebe1f5-a9ab-4cfb-97c6-ff93f2a52ad3\tINFO\tEvent: {\n  \"resource\": \"/waitlist\",\n  \"path\": \"/waitlist\",\n  \"httpMethod\": \"POST\",\n  \"headers\": {\n    \"accept\": \"*/*\",\n    \"accept-encoding\": \"gzip, deflate, br, zstd\",\n    \"accept-language\": \"en-GB,en-US;q=0.9,en;q=0.8\",\n    \"content-type\": \"application/json\",\n    \"Host\": \"zp2p756qze.execute-api.us-east-1.amazonaws.com\",\n    \"origin\": \"https://aicareeragentcoach.agency\",\n    \"priority\": \"u=1, i\",\n    \"referer\": \"https://aicareeragentcoach.agency/\",\n    \"sec-ch-ua\": \"\\\"Google Chrome\\\";v=\\\"143\\\", \\\"Chromium\\\";v=\\\"143\\\", \\\"Not A(Brand\\\";v=\\\"24\\\"\",\n    \"sec-ch-ua-mobile\": \"?0\",\n    \"sec-ch-ua-platform\": \"\\\"Windows\\\"\",\n    \"sec-fetch-dest\": \"empty\",\n    \"sec-fetch-mode\": \"cors\",\n    \"sec-fetch-site\": \"cross-site\",\n    \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\",\n    \"X-Amzn-Trace-Id\": \"Root=1-6950f702-681b2f0f59455921161d6e92\",\n    \"X-Forwarded-For\": \"98.33.109.131\",\n    \"X-Forwarded-Port\": \"443\",\n    \"X-Forwarded-Proto\": \"https\"\n  },\n  \"multiValueHeaders\": {\n    \"accept\": [\n      \"*/*\"\n    ],\n    \"accept-encoding\": [\n      \"gzip, deflate, br, zstd\"\n    ],\n    \"accept-language\": [\n      \"en-GB,en-US;q=0.9,en;q=0.8\"\n    ],\n    \"content-type\": [\n      \"application/json\"\n    ],\n    \"Host\": [\n      \"zp2p756qze.execute-api.us-east-1.amazonaws.com\"\n    ],\n    \"origin\": [\n      \"https://aicareeragentcoach.agency\"\n    ],\n    \"priority\": [\n      \"u=1, i\"\n    ],\n    \"referer\": [\n      \"https://aicareeragentcoach.agency/\"\n    ],\n    \"sec-ch-ua\": [\n      \"\\\"Google Chrome\\\";v=\\\"143\\\", \\\"Chromium\\\";v=\\\"143\\\", \\\"Not A(Brand\\\";v=\\\"24\\\"\"\n    ],\n    \"sec-ch-ua-mobile\": [\n      \"?0\"\n    ],\n    \"sec-ch-ua-platform\": [\n      \"\\\"Windows\\\"\"\n    ],\n    \"sec-fetch-dest\": [\n      \"empty\"\n    ],\n    \"sec-fetch-mode\": [\n      \"cors\"\n    ],\n    \"sec-fetch-site\": [\n      \"cross-site\"\n    ],\n    \"User-Agent\": [\n      \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\"\n    ],\n    \"X-Amzn-Trace-Id\": [\n      \"Root=1-6950f702-681b2f0f59455921161d6e92\"\n    ],\n    \"X-Forwarded-For\": [\n      \"98.33.109.131\"\n    ],\n    \"X-Forwarded-Port\": [\n      \"443\"\n    ],\n    \"X-Forwarded-Proto\": [\n      \"https\"\n    ]\n  },\n  \"queryStringParameters\": null,\n  \"multiValueQueryStringParameters\": null,\n  \"pathParameters\": null,\n  \"stageVariables\": null,\n  \"requestContext\": {\n    \"resourceId\": \"v3sphl\",\n    \"resourcePath\": \"/waitlist\",\n    \"httpMethod\": \"POST\",\n    \"extendedRequestId\": \"WSuIhHlroAMEcBg=\",\n    \"requestTime\": \"28/Dec/2025:09:23:14 +0000\",\n    \"path\": \"/prod/waitlist\",\n    \"accountId\": \"980826468182\",\n    \"protocol\": \"HTTP/1.1\",\n    \"stage\": \"prod\",\n    \"domainPrefix\": \"zp2p756qze\",\n    \"requestTimeEpoch\": 1766913794952,\n    \"requestId\": \"06a4edb9-1885-4674-9d79-c6ddbf26bca7\",\n    \"identity\": {\n      \"cognitoIdentityPoolId\": null,\n      \"accountId\": null,\n      \"cognitoIdentityId\": null,\n      \"caller\": null,\n      \"sourceIp\": \"98.33.109.131\",\n      \"principalOrgId\": null,\n      \"accessKey\": null,\n      \"cognitoAuthenticationType\": null,\n      \"cognitoAuthenticationProvider\": null,\n      \"userArn\": null,\n      \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\",\n      \"user\": null\n    },\n    \"domainName\": \"zp2p756qze.execute-api.us-east-1.amazonaws.com\",\n    \"deploymentId\": \"e364ci\",\n    \"apiId\": \"zp2p756qze\"\n  },\n  \"body\": \"{\\\"email\\\":\\\"rajkumarthota18110@gmail.com\\\"}\",\n  \"isBase64Encoded\": false\n}\n",
+            "ingestionTime": 1766913799514
+        },
+        {
+            "timestamp": 1766913796030,
+            "message": "END RequestId: c2ebe1f5-a9ab-4cfb-97c6-ff93f2a52ad3\n",
+            "ingestionTime": 1766913799514
+        },
+        {
+            "timestamp": 1766913796031,
+            "message": "REPORT RequestId: c2ebe1f5-a9ab-4cfb-97c6-ff93f2a52ad3\tDuration: 475.05 ms\tBilled Duration: 889 ms\tMemory Size: 256 MB\tMax Memory Used: 91 MB\tInit Duration: 413.69 ms\t\n",
+            "ingestionTime": 1766913799514
+        }
+    ],
+    "nextForwardToken": "f/39403494353055840060546838273365376363322395065829883908/s",
+    "nextBackwardToken": "b/39403494333118973853060461184832444227574759879483392000/s"
+}
