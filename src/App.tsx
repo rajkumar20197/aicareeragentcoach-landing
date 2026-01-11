@@ -49,7 +49,7 @@ function App() {
                     >
                         <img
                             src="/images/logo.png"
-                            alt="AI Career Agent Coach"
+                            alt="Agentic AI Career Coach"
                             className="h-16 md:h-24 mx-auto drop-shadow-2xl"
                         />
                     </motion.div>
@@ -153,7 +153,7 @@ function App() {
                             </a>
                         </div>
                         <p className="text-xs text-gray-600 tracking-widest uppercase">
-                            © 2025 AI Career Agent Coach. All rights reserved.
+                            © 2025 Agentic AI Career Coach. All rights reserved.
                         </p>
                     </div>
                 </motion.footer>
