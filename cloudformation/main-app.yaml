@@ -1,0 +1,762 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "AI Career Agent Coach - Complete Production Infrastructure"
+
+Parameters:
+  Environment:
+    Type: String
+    Default: production
+    AllowedValues: [development, staging, production]
+    Description: Environment name
+
+  ProjectName:
+    Type: String
+    Default: aicareeragentcoach
+    Description: Project name for resource naming
+
+  DomainName:
+    Type: String
+    Default: aicareeragentcoach.com
+    Description: Primary domain name
+
+  AdminEmail:
+    Type: String
+    Description: Admin email for notifications
+    Default: admin@aicareeragentcoach.com
+
+Resources:
+  # ===== S3 BUCKETS =====
+
+  # Main file uploads bucket
+  FileUploadsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${ProjectName}-uploads-${Environment}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteOldVersions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 30
+
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Static website hosting bucket
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${ProjectName}-website-${Environment}"
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Website bucket policy for public read
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebsiteBucket
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub "${WebsiteBucket}/*"
+
+  # ===== DYNAMODB TABLES =====
+
+  # Users table
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${ProjectName}-users-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: email
+          AttributeType: S
+        - AttributeName: createdAt
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: EmailIndex
+          KeySchema:
+            - AttributeName: email
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: CreatedAtIndex
+          KeySchema:
+            - AttributeName: createdAt
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Applications table
+  ApplicationsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${ProjectName}-applications-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: applicationId
+          AttributeType: S
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: status
+          AttributeType: S
+      KeySchema:
+        - AttributeName: applicationId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: UserIdIndex
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: StatusIndex
+          KeySchema:
+            - AttributeName: status
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Jobs table
+  JobsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${ProjectName}-jobs-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: jobId
+          AttributeType: S
+        - AttributeName: company
+          AttributeType: S
+        - AttributeName: location
+          AttributeType: S
+      KeySchema:
+        - AttributeName: jobId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: CompanyIndex
+          KeySchema:
+            - AttributeName: company
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: LocationIndex
+          KeySchema:
+            - AttributeName: location
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # ===== SNS TOPICS =====
+
+  # Payment notifications
+  PaymentFailedTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${ProjectName}-payment-failed-${Environment}"
+      DisplayName: Payment Failed Notifications
+      KmsMasterKeyId: alias/aws/sns
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  PaymentSuccessTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${ProjectName}-payment-success-${Environment}"
+      DisplayName: Payment Success Notifications
+      KmsMasterKeyId: alias/aws/sns
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Admin alerts
+  AdminAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${ProjectName}-admin-alerts-${Environment}"
+      DisplayName: Admin Alert Notifications
+      KmsMasterKeyId: alias/aws/sns
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Subscription canceled
+  SubscriptionCanceledTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${ProjectName}-subscription-canceled-${Environment}"
+      DisplayName: Subscription Canceled Notifications
+      KmsMasterKeyId: alias/aws/sns
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Admin email subscription
+  AdminEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: email
+      TopicArn: !Ref AdminAlertsTopic
+      Endpoint: !Ref AdminEmail
+
+  # ===== SQS QUEUES =====
+
+  # Payment retry queue
+  PaymentRetryQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${ProjectName}-payment-retry-${Environment}"
+      VisibilityTimeoutSeconds: 300
+      MessageRetentionPeriod: 1209600 # 14 days
+      DelaySeconds: 0
+      MaxReceiveCount: 3
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt PaymentDeadLetterQueue.Arn
+        maxReceiveCount: 3
+      KmsMasterKeyId: alias/aws/sqs
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Payment dead letter queue
+  PaymentDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${ProjectName}-payment-dlq-${Environment}"
+      MessageRetentionPeriod: 1209600 # 14 days
+      KmsMasterKeyId: alias/aws/sqs
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Email processing queue
+  EmailProcessingQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${ProjectName}-email-processing-${Environment}"
+      VisibilityTimeoutSeconds: 60
+      MessageRetentionPeriod: 345600 # 4 days
+      KmsMasterKeyId: alias/aws/sqs
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # ===== CLOUDWATCH LOG GROUPS =====
+
+  # Application logs
+  ApplicationLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/application/${ProjectName}-${Environment}"
+      RetentionInDays: 30
+      KmsKeyId: !GetAtt LogsKMSKey.Arn
+
+  # Lambda logs
+  LambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${ProjectName}-${Environment}"
+      RetentionInDays: 14
+      KmsKeyId: !GetAtt LogsKMSKey.Arn
+
+  # S3 access logs
+  S3LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/s3/${ProjectName}-${Environment}"
+      RetentionInDays: 7
+      KmsKeyId: !GetAtt LogsKMSKey.Arn
+
+  # ===== KMS KEYS =====
+
+  # Logs encryption key
+  LogsKMSKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: !Sub "KMS Key for ${ProjectName} logs encryption"
+      KeyPolicy:
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: "kms:*"
+            Resource: "*"
+          - Sid: Allow CloudWatch Logs
+            Effect: Allow
+            Principal:
+              Service: !Sub "logs.${AWS::Region}.amazonaws.com"
+            Action:
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+              - kms:DescribeKey
+            Resource: "*"
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  LogsKMSKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub "alias/${ProjectName}-logs-${Environment}"
+      TargetKeyId: !Ref LogsKMSKey
+
+  # ===== IAM ROLES =====
+
+  # Lambda execution role
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-lambda-execution-${Environment}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource:
+                  - !GetAtt UsersTable.Arn
+                  - !GetAtt ApplicationsTable.Arn
+                  - !GetAtt JobsTable.Arn
+                  - !Sub "${UsersTable.Arn}/index/*"
+                  - !Sub "${ApplicationsTable.Arn}/index/*"
+                  - !Sub "${JobsTable.Arn}/index/*"
+        - PolicyName: S3Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub "${FileUploadsBucket}/*"
+        - PolicyName: SNSPublish
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sns:Publish
+                Resource:
+                  - !Ref PaymentFailedTopic
+                  - !Ref PaymentSuccessTopic
+                  - !Ref AdminAlertsTopic
+                  - !Ref SubscriptionCanceledTopic
+        - PolicyName: SQSAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                Resource:
+                  - !GetAtt PaymentRetryQueue.Arn
+                  - !GetAtt PaymentDeadLetterQueue.Arn
+                  - !GetAtt EmailProcessingQueue.Arn
+        - PolicyName: BedrockAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                Resource:
+                  - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-3-5-haiku-20241022-v1:0"
+                  - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.*"
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # EC2/ECS execution role
+  ApplicationExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ProjectName}-application-execution-${Environment}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+                - ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+      Policies:
+        - PolicyName: FullApplicationAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:*
+                Resource:
+                  - !GetAtt UsersTable.Arn
+                  - !GetAtt ApplicationsTable.Arn
+                  - !GetAtt JobsTable.Arn
+                  - !Sub "${UsersTable.Arn}/index/*"
+                  - !Sub "${ApplicationsTable.Arn}/index/*"
+                  - !Sub "${JobsTable.Arn}/index/*"
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource:
+                  - !GetAtt FileUploadsBucket.Arn
+                  - !Sub "${FileUploadsBucket}/*"
+                  - !GetAtt WebsiteBucket.Arn
+                  - !Sub "${WebsiteBucket}/*"
+              - Effect: Allow
+                Action:
+                  - sns:Publish
+                Resource:
+                  - !Ref PaymentFailedTopic
+                  - !Ref PaymentSuccessTopic
+                  - !Ref AdminAlertsTopic
+                  - !Ref SubscriptionCanceledTopic
+              - Effect: Allow
+                Action:
+                  - sqs:*
+                Resource:
+                  - !GetAtt PaymentRetryQueue.Arn
+                  - !GetAtt PaymentDeadLetterQueue.Arn
+                  - !GetAtt EmailProcessingQueue.Arn
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                  - bedrock:ListFoundationModels
+                  - bedrock:GetFoundationModel
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource: "*"
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Instance profile for EC2
+  ApplicationInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: !Sub "${ProjectName}-instance-profile-${Environment}"
+      Roles:
+        - !Ref ApplicationExecutionRole
+
+  # ===== LAMBDA FUNCTIONS =====
+
+  # AI Job Matcher Function
+  AiJobMatcherFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "${ProjectName}-ai-job-matcher-${Environment}"
+      Handler: index.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref FileUploadsBucket # Placeholder: Needs to be updated with actual deployment bucket
+        S3Key: lambda/ai-job-matcher.zip
+      Runtime: nodejs18.x
+      Timeout: 60
+      MemorySize: 256
+      Environment:
+        Variables:
+          USERS_TABLE_NAME: !Ref UsersTable
+          JOBS_TABLE_NAME: !Ref JobsTable
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Payment Processor Function
+  PaymentProcessorFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "${ProjectName}-payment-processor-${Environment}"
+      Handler: index.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref FileUploadsBucket # Placeholder
+        S3Key: lambda/payment-processor.zip
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          USERS_TABLE_NAME: !Ref UsersTable
+          PAYMENTS_TABLE_NAME: !Ref UsersTable # Storing in Users table for now as per code
+          SNS_TOPIC_PAYMENT_SUCCESS: !Ref PaymentSuccessTopic
+          SNS_TOPIC_PAYMENT_FAILED: !Ref PaymentFailedTopic
+          SNS_TOPIC_SUBSCRIPTION_CANCELED: !Ref SubscriptionCanceledTopic
+          SNS_TOPIC_ADMIN_ALERTS: !Ref AdminAlertsTopic
+          SQS_QUEUE_PAYMENT_RETRY: !Ref PaymentRetryQueue
+          STRIPE_SECRET_KEY: "{{resolve:secretsmanager:prod/stripe:SecretKey}}" # Using Secrets Manager
+          STRIPE_WEBHOOK_SECRET: "{{resolve:secretsmanager:prod/stripe:WebhookSecret}}"
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # ===== EVENTBRIDGE RULES =====
+
+  # Daily Job Matcher Schedule (Runs every day at 8:00 AM UTC)
+  JobMatchingSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub "${ProjectName}-daily-job-match-${Environment}"
+      Description: "Triggers AI Job Matcher daily"
+      ScheduleExpression: "cron(0 8 * * ? *)"
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt AiJobMatcherFunction.Arn
+          Id: "AiJobMatcherTarget"
+
+  # Keep Warm Rule (Ping lambdas every 15 minutes to prevent cold starts - Optional)
+  KeepWarmSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub "${ProjectName}-keep-warm-${Environment}"
+      Description: "Keeps critical Lambda functions warm"
+      ScheduleExpression: "rate(15 minutes)"
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt PaymentProcessorFunction.Arn
+          Id: "PaymentProcessorTarget"
+          Input: '{"source": "aws.events", "detail-type": "Scheduled Event", "detail": {"keepWarm": true}}'
+
+  # ===== PERMISSIONS =====
+
+  # Allow EventBridge to invoke AiJobMatcher
+  AiJobMatcherInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref AiJobMatcherFunction
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt JobMatchingSchedule.Arn
+
+  # Allow EventBridge to invoke PaymentProcessor (for keep warm)
+  PaymentProcessorInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref PaymentProcessorFunction
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt KeepWarmSchedule.Arn
+
+Outputs:
+  # S3 Buckets
+  FileUploadsBucketName:
+    Description: Name of the file uploads S3 bucket
+    Value: !Ref FileUploadsBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-FileUploadsBucket"
+
+  WebsiteBucketName:
+    Description: Name of the website S3 bucket
+    Value: !Ref WebsiteBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-WebsiteBucket"
+
+  WebsiteURL:
+    Description: URL of the website
+    Value: !GetAtt WebsiteBucket.WebsiteURL
+    Export:
+      Name: !Sub "${AWS::StackName}-WebsiteURL"
+
+  # DynamoDB Tables
+  UsersTableName:
+    Description: Name of the Users DynamoDB table
+    Value: !Ref UsersTable
+    Export:
+      Name: !Sub "${AWS::StackName}-UsersTable"
+
+  ApplicationsTableName:
+    Description: Name of the Applications DynamoDB table
+    Value: !Ref ApplicationsTable
+    Export:
+      Name: !Sub "${AWS::StackName}-ApplicationsTable"
+
+  JobsTableName:
+    Description: Name of the Jobs DynamoDB table
+    Value: !Ref JobsTable
+    Export:
+      Name: !Sub "${AWS::StackName}-JobsTable"
+
+  # SNS Topics
+  PaymentFailedTopicArn:
+    Description: ARN of the Payment Failed SNS topic
+    Value: !Ref PaymentFailedTopic
+    Export:
+      Name: !Sub "${AWS::StackName}-PaymentFailedTopic"
+
+  PaymentSuccessTopicArn:
+    Description: ARN of the Payment Success SNS topic
+    Value: !Ref PaymentSuccessTopic
+    Export:
+      Name: !Sub "${AWS::StackName}-PaymentSuccessTopic"
+
+  AdminAlertsTopicArn:
+    Description: ARN of the Admin Alerts SNS topic
+    Value: !Ref AdminAlertsTopic
+    Export:
+      Name: !Sub "${AWS::StackName}-AdminAlertsTopic"
+
+  SubscriptionCanceledTopicArn:
+    Description: ARN of the Subscription Canceled SNS topic
+    Value: !Ref SubscriptionCanceledTopic
+    Export:
+      Name: !Sub "${AWS::StackName}-SubscriptionCanceledTopic"
+
+  # SQS Queues
+  PaymentRetryQueueUrl:
+    Description: URL of the Payment Retry SQS queue
+    Value: !Ref PaymentRetryQueue
+    Export:
+      Name: !Sub "${AWS::StackName}-PaymentRetryQueue"
+
+  PaymentDeadLetterQueueUrl:
+    Description: URL of the Payment Dead Letter SQS queue
+    Value: !Ref PaymentDeadLetterQueue
+    Export:
+      Name: !Sub "${AWS::StackName}-PaymentDeadLetterQueue"
+
+  EmailProcessingQueueUrl:
+    Description: URL of the Email Processing SQS queue
+    Value: !Ref EmailProcessingQueue
+    Export:
+      Name: !Sub "${AWS::StackName}-EmailProcessingQueue"
+
+  # IAM Roles
+  LambdaExecutionRoleArn:
+    Description: ARN of the Lambda execution role
+    Value: !GetAtt LambdaExecutionRole.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-LambdaExecutionRole"
+
+  ApplicationExecutionRoleArn:
+    Description: ARN of the application execution role
+    Value: !GetAtt ApplicationExecutionRole.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-ApplicationExecutionRole"
+
+  ApplicationInstanceProfileArn:
+    Description: ARN of the application instance profile
+    Value: !GetAtt ApplicationInstanceProfile.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-ApplicationInstanceProfile"

@@ -11,7 +11,7 @@ export const WaitlistForm: React.FC = () => {
     useEffect(() => {
         const fetchCount = async () => {
             try {
-                const response = await fetch('https://zp2p756qze.execute-api.us-east-1.amazonaws.com/prod/waitlist', {
+                const response = await fetch('https://0b72d7xf55.execute-api.us-east-1.amazonaws.com/prod/waitlist', {
                     method: 'GET',
                     headers: { 'Accept': 'application/json' }
                 });
@@ -40,7 +40,7 @@ export const WaitlistForm: React.FC = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('https://zp2p756qze.execute-api.us-east-1.amazonaws.com/prod/waitlist', {
+            const response = await fetch('https://0b72d7xf55.execute-api.us-east-1.amazonaws.com/prod/waitlist', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email.toLowerCase().trim() }),

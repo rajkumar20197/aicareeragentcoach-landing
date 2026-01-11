@@ -6,3 +6,22 @@ dist/
 .env.local
 .vscode/
 *.zip
+
+# AWS Credentials - DO NOT COMMIT
+.aws/
+*.pem
+*.key
+credentials
+config
+
+# Documentation with potentially sensitive info - review before committing
+*CREDENTIALS*.md
+*SECURITY*.md
+*AWS_SERVICES*.md
+*.json
+*.txt
+cloudfront-*.json
+cert-arn.txt
+dist-id.txt
+cf-domain.txt
+new-*.json

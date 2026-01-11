@@ -61,7 +61,7 @@ const teamMembers = [
     },
     {
         name: "Koti",
-        role: "Marketing",
+        role: "System Design",
         description: "Driving growth and engagement strategies to expand our reach in the AI career space.",
         image: "/images/team/koti.png",
         position: "center top"
@@ -88,7 +88,7 @@ export const TeamSection: React.FC = () => {
 
         setStatus('loading');
         try {
-            const response = await fetch('https://zp2p756qze.execute-api.us-east-1.amazonaws.com/prod/waitlist', {
+            const response = await fetch('https://0b72d7xf55.execute-api.us-east-1.amazonaws.com/prod/waitlist', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
